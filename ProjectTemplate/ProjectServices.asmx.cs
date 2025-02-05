@@ -6,6 +6,7 @@ using System.Web.Services;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace ProjectTemplate
 {
@@ -119,5 +120,22 @@ namespace ProjectTemplate
 			Session.Abandon();
 			return true;
 		}
-	}
+
+        [WebMethod]
+        public string GetRandomComment()
+        {
+            string connectionString = getConString();
+            string query = "SELECT content FROM comments ORDER BY RAND() LIMIT 1"; // MySQL syntax
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                MySqlCommand command = new MySqlCommand(query, connection);
+                connection.Open();
+
+                object result = command.ExecuteScalar(); // Use ExecuteScalar for single values
+                return result != null ? result.ToString() : "No comments found.";
+            }
+        }
+
+    }
 }

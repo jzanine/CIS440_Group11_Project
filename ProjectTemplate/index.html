@@ -12,7 +12,7 @@
 		//we're using a stacked card approach for our main viewing area
 		//this array holds the ids of our cards and
 		//the method allows us to easly switch the interface from one to the other
-		var contentPanels = ['logonPanel', 'mainPanel'];
+		var contentPanels = ['logonPanel', 'mainPanel','responsePanel'];
 
 		//this function toggles which panel is showing, and also clears data from all panels
 		function showPanel(panelId) {
@@ -131,6 +131,58 @@
 			showPanel('logonPanel');
 		});
 
+        // Ensure that the DOM is fully loaded before attaching event listeners
+        $(document).ready(function () {
+            // Attach event handler once
+            $(".randomCommentButton").click(function () {
+                loadRandomComment();
+            });
+        });
+
+        // Ensure the DOM is fully loaded before attaching event listeners
+        $(document).ready(function () {
+            // Event listener for "Load Random Comment" button
+            $(".randomCommentButton").click(function () {
+                loadRandomComment();
+            });
+
+            // Event listener for "Skip" button (same functionality for now)
+            $(".skipButton").click(function () {
+                loadRandomComment(); // Same functionality as randomCommentButton for now
+            });
+        });
+
+        // Function that loads a random comment by making an AJAX call
+        function loadRandomComment() {
+            // Show the response panel and hide others
+            showPanel("responsePanel");
+
+            var webMethod = "ProjectServices.asmx/GetRandomComment";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({}),
+                success: function (response) {
+                    // Check if the response contains valid data
+                    if (response.d && typeof response.d === "string" && response.d.trim() !== "") {
+                        // Update the response panel with the new comment
+                        $("#randomCommentDisplay").text(response.d);
+                    } else {
+                        $("#randomCommentDisplay").text("No comments found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", xhr.responseText);
+                    alert("Error loading comment.");
+                }
+            });
+        }
+           
+
+
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
 	<!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
@@ -185,12 +237,29 @@
 			</div>
 		</div>
 
+
 		<div id="mainPanel" class="contentPanel mainPanel">
 			<div class="left">Add contents here!!</div>
+			<!-- Button that the user clicks to load a random comment -->
+			<button class="randomCommentButton">Load Random Comment</button>
 		</div>
 
 
-	</div>
+		<div id="responsePanel" class="randomCommentDisplay responsePanel">
+			<!-- The div where the random comment will be displayed -->
+			<div id="randomCommentDisplay"></div>
+
+			<!-- Load New Comment Button -->
+			<button class="randomCommentButton">Load Random Comment</button>
+
+			<!-- Skip Button -->
+			<button class="skipButton">Skip</button>
+		</div>
+
+
+
+
+
 
 </body>
 </html>
