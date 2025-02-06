@@ -125,7 +125,7 @@ namespace ProjectTemplate
         public string GetRandomComment()
         {
             string connectionString = getConString();
-            string query = "SELECT content FROM comments ORDER BY RAND() LIMIT 1"; // MySQL syntax
+            string query = "SELECT content FROM comments WHERE searchable = 1 ORDER BY RAND() LIMIT 1"; // MySQL syntax
 
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
