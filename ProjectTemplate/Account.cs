@@ -16,5 +16,6 @@ namespace ProjectTemplate
 		public string firstname;
 		public string lastname;
 		public Boolean admin;
+		public Boolean active;
 	}
 }

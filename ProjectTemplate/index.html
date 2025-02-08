@@ -12,11 +12,11 @@
 		//we're using a stacked card approach for our main viewing area
 		//this array holds the ids of our cards and
 		//the method allows us to easly switch the interface from one to the other
-		var contentPanels = ['logonPanel', 'mainPanel','responsePanel'];
+        var contentPanels = ['logonPanel', 'mainPanel', 'responsePanel', 'commentPanel', 'archivedPanel'];
 
-		//this function toggles which panel is showing, and also clears data from all panels
+		//this function toggles which panel is showing
 		function showPanel(panelId) {
-			clearData();
+			// clearData();
 			for (var i = 0; i < contentPanels.length; i++) {
 				if (panelId == contentPanels[i]) {
 					$("#" + contentPanels[i]).css("visibility", "visible");
@@ -25,11 +25,6 @@
 					$("#" + contentPanels[i]).css("visibility", "hidden");
 				}
 			}
-		}
-
-		//this function clears data from all panels
-		function clearData() {
-			clearLogon();
 		}
 
 		function LogOn(userId, pass) {
@@ -99,6 +94,23 @@
 			$('#logonPassword').val("");
 		}
 
+        //resets comments panel
+        function clearCommentsPage() {
+            document.getElementById("commentPanel").innerHTML = "";
+        }
+
+        // resets archived comments panel
+        function clearArchivedPage() {
+            document.getElementById("archivedPanel").innerHTML = "";
+        }
+
+        //this function clears data from all panels
+        function clearData() {
+            clearLogon();
+            clearCommentsPage();
+            clearArchivedPage();
+        }
+
 		//logs the user off both at the client and at the server
 		function LogOff() {
 
@@ -110,9 +122,10 @@
 				dataType: "json",
 				success: function (msg) {
 					if (msg.d) {
-						//we logged off, so go back to logon page,
-						showPanel('logonPanel');
-						HideMenu();
+                        //we logged off, so go back to logon page,
+                        showPanel('logonPanel');
+                        HideMenu();
+                        clearData();
 					}
 					else {
 					}
@@ -181,7 +194,134 @@
             });
         }
            
+        // array to hold comments and their respective replies and user info for each
+        var commentsArray;
 
+        function showActiveComments() {
+            var webMethod = "ProjectServices.asmx/GetActiveComments";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        commentsArray = msg.d;
+                        $("#commentPanel").empty();
+
+                        // Count replies with the same commentID (i.e. all replies to a single comment)
+                        for (var i = 0; i < commentsArray.length; i++) {
+                            var count = 0;
+                            for (var j = i + 1; j < commentsArray.length; j++) {
+                                if (commentsArray[i].commentID == commentsArray[j].commentID) {
+                                    count++;
+                                }
+                            }
+                            // Create the base comment HTML structure
+                            var comment =
+                                "<div id='comment" + i + "'>" +
+                                "<p>" + commentsArray[i].comment_firstname + " " +
+                                commentsArray[i].comment_lastname + ": " +
+                                commentsArray[i].comment_content + "</p>" +
+                                "<p>" + commentsArray[i].reply_firstname + " " +
+                                commentsArray[i].reply_lastname + ": " +
+                                commentsArray[i].reply_content + "</p>" +
+
+                                "</div><hr>";
+                            // Append the comment to the #commentPanel
+                            // !! VERY IMPORTANT !! Must append <div> to DOM before you can append to it
+                            $("#commentPanel").append(comment);
+
+                            // Append remaining replies associated with this comment
+                            for (var c = i + 1; c <= count + i; c++) {
+                                // Append each reply to the associated comment div
+                                $("#comment" + i).append(
+                                    "<p>" + commentsArray[c].reply_firstname + " " +
+                                    commentsArray[c].reply_lastname + ": " +
+                                    commentsArray[c].reply_content + "</p>");
+                            }
+                            $("#comment" + i).append(
+                                // Delete and Archive button PLACEHOLDERS
+                                "<button >Archive</button>" +
+                                "<button >Delete</button>"
+                            );
+                            // Skip number of replies to avoid repeating them (i.e. we already added them above)
+                            i = i + count;
+                        }
+                        showPanel('commentPanel');
+                    }
+                    else {
+                        alert("No comments to show or you do not have access rights.")
+                    }
+                },
+                error: function (e) {
+                    alert("Error in delivering the message to the server or the server processing that message");
+                }
+            });
+        }
+
+        function showArchivedComments() {
+            var webMethod = "ProjectServices.asmx/GetArchivedComments";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d.length > 0) {
+                        commentsArray = msg.d;
+                        $("#archivedPanel").empty();
+
+                        // Count replies with the same commentID (i.e. all replies to a single comment)
+                        for (var i = 0; i < commentsArray.length; i++) {
+                            var count = 0;
+                            for (var j = i + 1; j < commentsArray.length; j++) {
+                                if (commentsArray[i].commentID == commentsArray[j].commentID) {
+                                    count++;
+                                }
+                            }
+                            // Create the comment HTML structure
+                            var comment =
+                                "<div id='archcomment" + i + "'>" +
+                                "<p>" + commentsArray[i].comment_firstname + " " +
+                                commentsArray[i].comment_lastname + ": " +
+                                commentsArray[i].comment_content + "</p>" +
+                                "<p>" + commentsArray[i].reply_firstname + " " +
+                                commentsArray[i].reply_lastname + ": " +
+                                commentsArray[i].reply_content + "</p>" +
+
+                                "</div><hr>";
+                            // Append the comment to the #archivedPanel
+                            // !! VERY IMPORTANT !! Must append <div> to DOM before you can append to it
+                            $("#archivedPanel").append(comment);
+
+                            // Append remaining replies associated with this comment
+                            for (var c = i + 1; c <= count + i; c++) {
+                                // Append each reply to the associated comment div
+                                $("#archcomment" + i).append(
+                                    "<p>" + commentsArray[c].reply_firstname + " " +
+                                    commentsArray[c].reply_lastname + ": " +
+                                    commentsArray[c].reply_content + "</p>");
+                            }
+                            $("#archcomment" + i).append(
+                                // Delete & Unarchive button PLACEHOLDERS
+                                "<button >Unarchive</button>" +
+                                "<button >Delete</button>"
+                            );
+                            // Skip number of replies to avoid repeating them (i.e. we already added them above)
+                            i = i + count;
+                        }
+                        showPanel('archivedPanel');
+                    }
+                    else {
+                        alert("No comments to show or you do not have access rights.")
+                    }
+                },
+                error: function (e) {
+                    alert("Error in delivering the message to the server or the server processing that message");
+                }
+            });
+        }
 
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
@@ -192,10 +332,11 @@
 			visibility: hidden;
 		}
 
-		/* hidden by default */
-		.contentPanel {
-			visibility: hidden;
-		}
+        /* hidden by default */
+        .contentPanel {
+            visibility: hidden;
+            position: absolute;
+        }
 	</style>
 	<!--END OF YOUR OWN CSS-->
 </head>
@@ -204,10 +345,12 @@
 	<!-- Build Menu Here -->
 	<div class="titleContainer">
 		<span>Feedback!</span>
-		<div id="menu" class="menu">
-			<a href="#" onclick="LogOff()">Log Off</a>
-			<hr />
-		</div>
+        <div id="menu" class="menu">
+            <button onclick=showActiveComments()>Show Active Comments</button>
+            <button onclick=showArchivedComments()>Show Archived Comments</button>
+            <button onclick=LogOff()>Log Off</button>
+            <hr />
+        </div>
 	</div>
 
 	<!--
@@ -216,51 +359,52 @@
 		!! DON'T FORGET TO ADD DIV ID TO JAVASCRIPT ARRAY: contentPanels !!
 		that method allows us to easly switch the interface from one to the other
 	 -->
-	<div class="contentContainer">
+    <div class="contentContainer">
 
-		<div id="logonPanel" class="contentPanel logonPanel">
-			<div class="logonBox">
-				<form onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
-					<div class="left">Log On</div>
-					<hr />
-					<div>
-						ID: <input type="text" id="logonId" />
-					</div>
-					<div>
-						Pwd: <input type="password" id="logonPassword" />
-					</div>
-					<hr />
-					<div>
-						<button type="submit">Go!</button>
-					</div>
-				</form>
-			</div>
-		</div>
-
-
-		<div id="mainPanel" class="contentPanel mainPanel">
-			<div class="left">Add contents here!!</div>
-			<!-- Button that the user clicks to load a random comment -->
-			<button class="randomCommentButton">Load Random Comment</button>
-		</div>
+        <div id="logonPanel" class="contentPanel logonPanel">
+            <div class="logonBox">
+                <form onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
+                    <div class="left">Log On</div>
+                    <hr />
+                    <div>
+                        ID: <input type="text" id="logonId" />
+                    </div>
+                    <div>
+                        Pwd: <input type="password" id="logonPassword" />
+                    </div>
+                    <hr />
+                    <div>
+                        <button type="submit">Go!</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
 
-		<div id="responsePanel" class="randomCommentDisplay responsePanel">
-			<!-- The div where the random comment will be displayed -->
-			<div id="randomCommentDisplay"></div>
-
-			<!-- Load New Comment Button -->
-			<button class="randomCommentButton">Load Random Comment</button>
-
-			<!-- Skip Button -->
-			<button class="skipButton">Skip</button>
-		</div>
-	</div>
+        <div id="mainPanel" class="contentPanel mainPanel">
+            <div class="left">Add contents here!!</div>
+            <!-- Button that the user clicks to load a random comment -->
+            <button class="randomCommentButton">Load Random Comment</button>
+        </div>
 
 
+        <div id="responsePanel" class="randomCommentDisplay responsePanel">
+            <!-- The div where the random comment will be displayed -->
+            <div id="randomCommentDisplay"></div>
 
+            <!-- Load New Comment Button -->
+            <button class="randomCommentButton">Load Random Comment</button>
 
+            <!-- Skip Button -->
+            <button class="skipButton">Skip</button>
+        </div>
 
+        <!-- Panel to display active comments and replies -->
+        <div id="commentPanel" class="contentPanel commentPanel"></div>
+
+        <!-- Panel to display archived comments and replies -->
+        <div id="archivedPanel" class="contentPanel archivedPanel"></div>
+    </div>
 
 </body>
 </html>
