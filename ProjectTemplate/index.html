@@ -76,7 +76,39 @@
 					alert("Error in delivering the message to the server or the server processing that message");
 				}
 			});
-		}
+        }
+
+        // Function to submit a suggestion
+        function submitSuggestion() {
+            var suggestion = $("#suggestionText").val();
+            if (suggestion.trim() === "") {
+                alert("Please enter a suggestion.");
+                return;
+            }
+            var webMethod = "ProjectServices.asmx/SubmitSuggestion";
+            var parameters = JSON.stringify({ suggestion: suggestion });
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var response = JSON.parse(msg.d);
+                    if (response.success) {
+                        alert("Suggestion submitted successfully!");
+                        $("#suggestionText").val(""); // Clear input after success
+                    } else {
+                        alert("Submission failed: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("Error connecting to the server.");
+                }
+            });
+        }
+
 
 		//just shows the menu
 		function ShowMenu() {
@@ -383,6 +415,12 @@
 
         <div id="mainPanel" class="contentPanel mainPanel">
             <div class="left">Add contents here!!</div>
+            <!-- Suggestion Input Box -->
+            <textarea id="suggestionText" placeholder="Enter your suggestion here..."></textarea>
+
+            <!-- Submit Button -->
+            <button onclick="submitSuggestion()">Submit Suggestion</button>
+
             <!-- Button that the user clicks to load a random comment -->
             <button class="randomCommentButton">Load Random Comment</button>
         </div>

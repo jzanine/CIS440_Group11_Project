@@ -119,6 +119,46 @@ namespace ProjectTemplate
 			return true;
 		}
 
+        [WebMethod(EnableSession = true)]
+        public string SubmitSuggestion(string suggestion)
+        {
+            if (Session["accountID"] == null)
+            {
+                return "{ \"success\": false, \"message\": \"User must be logged in.\"}";
+            }
+            try
+            {
+                // Input Validation
+                if (string.IsNullOrEmpty(suggestion))
+                {
+                    return "{ \"success\": false, \"message\": \"Suggestion cannot be empty.\"}";
+                }
+                if (suggestion.Length > 500) // Example length limit
+                {
+                    return "{ \"success\": false, \"message\": \"Suggestion is too long.\"}";
+                }
+
+                // Insert into database
+                using (MySqlConnection connection = new MySqlConnection(getConString()))
+                {
+                    connection.Open();
+                    string query = "INSERT INTO comments (accountID, content) VALUES (@accountID, @suggestion)";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@accountID", Session["accountID"]);
+                        command.Parameters.AddWithValue("@suggestion", suggestion);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                return "{ \"success\": true }"; // Consistent JSON response
+            }
+            catch (Exception e)
+            {
+                return "{ \"success\": false, \"message\": \"An unexpected error occurred. Please try again later.\" }";
+            }
+        }
+
+
         [WebMethod/*EnableSession = true)*/] // Enable Session?? If so, remove comment block to add.
         public string GetRandomComment()
         {
