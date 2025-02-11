@@ -61,7 +61,7 @@
                         //server replied true, so show the landing page: mainPanel
                         showPanel('mainPanel');
                         ShowMenu();
-                        skipsRemaining = 10; // Reset skips to 3 
+                        skipsRemaining = 3; // Reset skips to 3 
                     }
                     else {
                         //server replied false, so let the user know
@@ -141,7 +141,7 @@
             document.getElementById("randomCommentDisplay").innerHTML = "";
             skipTrackerArray = [];
             activeCommentCount = 0;
-            skipsRemaining = 10;
+            skipsRemaining = 3;
         }
 
         //this function clears data from all panels
@@ -268,7 +268,7 @@
         }
 
         // Track the number of skips remaining
-        var skipsRemaining = 10; // Example initial value
+        var skipsRemaining = 3; // Example initial value
 
         // Function to handle the skip action
         function handleSkip() {
