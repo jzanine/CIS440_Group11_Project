@@ -70,7 +70,7 @@ namespace ProjectTemplate
             public string Message { get; set; }
             public int SkipsLeft { get; set; }
         }
-        [WebMethod/*EnableSession = true)*/] // Enable Session?? If so, remove comment block to add.
+        [WebMethod(EnableSession = true)]
         public string GetRandomComment()
         {
             string connectionString = getConString();

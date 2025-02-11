@@ -137,11 +137,17 @@
             document.getElementById("archivedPanel").innerHTML = "";
         }
 
+        function clearResponsePanel() {
+            document.getElementById("randomCommentDisplay").innerHTML = "";
+            skipTrackerArray = [];
+        }
+
         //this function clears data from all panels
         function clearData() {
             clearLogon();
             clearCommentsPage();
             clearArchivedPage();
+            clearResponsePanel();
         }
 
         //logs the user off both at the client and at the server
@@ -197,10 +203,13 @@
         var currentComment = "";
         var savedComment = ""; // Variable to save the comment for later use
 
+        // track skipped comments to avoid showing repeats
+        var skipTrackerArray = [];
+
         // Function to load a random comment from the server
         function loadRandomComment() {
             // Show the response panel and ensure other panels are hidden
-            showPanel("responsePanel");
+            // showPanel("responsePanel");
 
             var webMethod = "ProjectServices.asmx/GetRandomComment";
 
@@ -213,11 +222,21 @@
                 success: function (response) {
                     // Check if response contains a valid comment
                     if (response.d && typeof response.d === "string" && response.d.trim() !== "") {
-                        currentComment = response.d; // Store the new comment
-                        $("#randomCommentDisplay").text(currentComment); // Display comment
-                        savedComment = currentComment; // Save the comment for later use
-                        console.log("Saved Comment: " + savedComment); // Log the saved comment for debugging
-                    } else {
+                        if (!skipTrackerArray.includes(response.d)) {
+                            skipTrackerArray.push(response.d);
+                            currentComment = response.d; // Store the new comment
+                            $("#randomCommentDisplay").text(currentComment); // Display comment
+                            savedComment = currentComment; // Save the comment for later use
+                            console.log("Saved Comment: " + savedComment); // Log the saved comment for debugging
+                            // Show the response panel and ensure other panels are hidden
+                            showPanel("responsePanel");
+                        }
+                        else {
+                            // Load another comment if it's a repeat
+                            loadRandomComment();
+                        }                                            
+                    }
+                    else {
                         $("#randomCommentDisplay").text("No comments found."); // Handle empty response
                     }
                 },
