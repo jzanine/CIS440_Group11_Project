@@ -86,7 +86,22 @@ namespace ProjectTemplate
             }
         }
 
-        [WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
+		[WebMethod(EnableSession = true)]
+		public int CountComments()
+		{
+			string connectionString = getConString();
+			string query = "SELECT COUNT(*) AS total_rows FROM comments WHERE searchable=1";
+
+			using (MySqlConnection sqlConnection = new MySqlConnection(connectionString))
+			{
+				MySqlCommand sqlCommand = new MySqlCommand(query, sqlConnection);
+				sqlConnection.Open();
+				int totalRows = Convert.ToInt32(sqlCommand.ExecuteScalar());
+				return totalRows;
+			}
+		}
+
+		[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
 		public bool LogOn(string uid, string pass)
 		{
 			//we return this flag to tell them if they logged in or not

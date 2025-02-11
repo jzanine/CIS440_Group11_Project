@@ -61,7 +61,7 @@
                         //server replied true, so show the landing page: mainPanel
                         showPanel('mainPanel');
                         ShowMenu();
-                        skipsRemaining = 3; // Reset skips to 3 
+                        skipsRemaining = 10; // Reset skips to 3 
                     }
                     else {
                         //server replied false, so let the user know
@@ -140,6 +140,8 @@
         function clearResponsePanel() {
             document.getElementById("randomCommentDisplay").innerHTML = "";
             skipTrackerArray = [];
+            activeCommentCount = 0;
+            skipsRemaining = 10;
         }
 
         //this function clears data from all panels
@@ -174,16 +176,7 @@
                 }
             });
         }
-
-        //this function executes once jQuery has successfully loaded and is
-        //ready for business.  Usually, if we're wiring up event handlers via jQuery
-        //then this is where they go.
-        jQuery(function () {
-            //when the app loads, show the logon panel to start with!
-            showPanel('logonPanel');
-        });
-
-
+                
         // Ensure the DOM is fully loaded before attaching event listeners
         $(document).ready(function () {
             // Event listener for "Load Random Comment" button
@@ -205,6 +198,24 @@
 
         // track skipped comments to avoid showing repeats
         var skipTrackerArray = [];
+        var activeCommentCount;
+
+        function getCommentCount() {
+
+            var webMethod = "ProjectServices.asmx/CountComments";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    activeCommentCount = msg.d;
+                },
+                error: function (e) {
+                    alert("Error in delivering the message to the server or the server processing that message");
+                }
+            });
+        }
 
         // Function to load a random comment from the server
         function loadRandomComment() {
@@ -221,23 +232,32 @@
                 data: JSON.stringify({}), // No additional parameters needed
                 success: function (response) {
                     // Check if response contains a valid comment
+                    getCommentCount();
+                    console.log(activeCommentCount); // for testing
+                    console.log(skipTrackerArray); // for testing
+                    console.log(skipsRemaining); // for testing
                     if (response.d && typeof response.d === "string" && response.d.trim() !== "") {
-                        if (!skipTrackerArray.includes(response.d)) {
-                            skipTrackerArray.push(response.d);
-                            currentComment = response.d; // Store the new comment
-                            $("#randomCommentDisplay").text(currentComment); // Display comment
-                            savedComment = currentComment; // Save the comment for later use
-                            console.log("Saved Comment: " + savedComment); // Log the saved comment for debugging
-                            // Show the response panel and ensure other panels are hidden
-                            showPanel("responsePanel");
+                        if (skipTrackerArray.length < activeCommentCount) {
+                            if (!skipTrackerArray.includes(response.d)) {
+                                skipTrackerArray.push(response.d);
+                                currentComment = response.d; // Store the new comment
+                                $("#randomCommentDisplay").text(currentComment); // Display comment
+                                savedComment = currentComment; // Save the comment for later use
+                                console.log("Saved Comment: " + savedComment); // Log the saved comment for debugging
+                                // Show the response panel and ensure other panels are hidden
+                                showPanel("responsePanel");
+                            }
+                            else {
+                                // Load another comment if it's a repeat
+                                loadRandomComment();
+                            }
                         }
                         else {
-                            // Load another comment if it's a repeat
-                            loadRandomComment();
-                        }                                            
+                            $("#randomCommentDisplay").text("No comments found."); // Handle empty response
+                        }
                     }
                     else {
-                        $("#randomCommentDisplay").text("No comments found."); // Handle empty response
+                        $("#randomCommentDisplay").text("No comments found.");
                     }
                 },
                 error: function (xhr, status, error) {
@@ -248,7 +268,7 @@
         }
 
         // Track the number of skips remaining
-        var skipsRemaining = 3; // Example initial value
+        var skipsRemaining = 10; // Example initial value
 
         // Function to handle the skip action
         function handleSkip() {
@@ -402,6 +422,15 @@
                 }
             });
         }
+
+        //this function executes once jQuery has successfully loaded and is
+        //ready for business.  Usually, if we're wiring up event handlers via jQuery
+        //then this is where they go.
+        jQuery(function () {
+            //when the app loads, show the logon panel to start with!
+            showPanel('logonPanel');
+
+        });
 
 	</script>
 	<!--END OF YOUR OWN JAVASCRIPT-->
