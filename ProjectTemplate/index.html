@@ -219,9 +219,8 @@
 
         // Function to load a random comment from the server
         function loadRandomComment() {
-            // Show the response panel and ensure other panels are hidden
-            // showPanel("responsePanel");
 
+            getCommentCount();
             var webMethod = "ProjectServices.asmx/GetRandomComment";
 
             $.ajax({
@@ -232,10 +231,10 @@
                 data: JSON.stringify({}), // No additional parameters needed
                 success: function (response) {
                     // Check if response contains a valid comment
-                    getCommentCount();
-                    console.log(activeCommentCount); // for testing
+                    
+                    console.log("Active comments: " + activeCommentCount); // for testing
                     console.log(skipTrackerArray); // for testing
-                    console.log(skipsRemaining); // for testing
+                    console.log("Skips remaining: " + skipsRemaining); // for testing
                     if (response.d && typeof response.d === "string" && response.d.trim() !== "") {
                         if (skipTrackerArray.length < activeCommentCount) {
                             if (!skipTrackerArray.includes(response.d)) {
