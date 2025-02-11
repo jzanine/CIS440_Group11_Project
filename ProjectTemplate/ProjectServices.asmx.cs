@@ -7,6 +7,8 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
+using System.Web.Script.Services;
 
 namespace ProjectTemplate
 {
@@ -32,38 +34,59 @@ namespace ProjectTemplate
 		{
 			return "SERVER=107.180.1.16; PORT=3306; DATABASE=" + dbname + "; UID=" + dbid + "; PASSWORD=" + dbpass;
 		}
-		////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
 
-		/////////////////////////////////////////////////////////////////////////
-		//don't forget to include this decoration above each method that you want
-		//to be exposed as a web service!
-		//[WebMethod(EnableSession = true)]
-		/////////////////////////////////////////////////////////////////////////
-		//public string TestConnection()
-		//{
-		//	try
-		//	{
-		//		string testQuery = "select * from accounts";
+        /////////////////////////////////////////////////////////////////////////
+        //don't forget to include this decoration above each method that you want
+        //to be exposed as a web service!
+        //[WebMethod(EnableSession = true)]
+        /////////////////////////////////////////////////////////////////////////
+        //public string TestConnection()
+        //{
+        //	try
+        //	{
+        //		string testQuery = "select * from accounts";
 
-		//		////////////////////////////////////////////////////////////////////////
-		//		///here's an example of using the getConString method!
-		//		////////////////////////////////////////////////////////////////////////
-		//		MySqlConnection con = new MySqlConnection(getConString());
-		//		////////////////////////////////////////////////////////////////////////
+        //		////////////////////////////////////////////////////////////////////////
+        //		///here's an example of using the getConString method!
+        //		////////////////////////////////////////////////////////////////////////
+        //		MySqlConnection con = new MySqlConnection(getConString());
+        //		////////////////////////////////////////////////////////////////////////
 
-		//		MySqlCommand cmd = new MySqlCommand(testQuery, con);
-		//		MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
-		//		DataTable table = new DataTable();
-		//		adapter.Fill(table);
-		//		return "Success!";
-		//	}
-		//	catch (Exception e)
-		//	{
-		//		return "Something went wrong, please check your credentials and db name and try again.  Error: "+e.Message;
-		//	}
-		//}
+        //		MySqlCommand cmd = new MySqlCommand(testQuery, con);
+        //		MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+        //		DataTable table = new DataTable();
+        //		adapter.Fill(table);
+        //		return "Success!";
+        //	}
+        //	catch (Exception e)
+        //	{
+        //		return "Something went wrong, please check your credentials and db name and try again.  Error: "+e.Message;
+        //	}
+        //}
+        public class SkipsResponse
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+            public int SkipsLeft { get; set; }
+        }
+        [WebMethod/*EnableSession = true)*/] // Enable Session?? If so, remove comment block to add.
+        public string GetRandomComment()
+        {
+            string connectionString = getConString();
+            string query = "SELECT content FROM comments WHERE searchable = 1 ORDER BY RAND() LIMIT 1"; // MySQL syntax
 
-		[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                MySqlCommand command = new MySqlCommand(query, connection);
+                connection.Open();
+
+                object result = command.ExecuteScalar(); // Use ExecuteScalar for single values
+                return result != null ? result.ToString() : "No comments found.";
+            }
+        }
+
+        [WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
 		public bool LogOn(string uid, string pass)
 		{
 			//we return this flag to tell them if they logged in or not
@@ -108,6 +131,7 @@ namespace ProjectTemplate
 			//return the result!
 			return success;
 		}
+
 
 		[WebMethod(EnableSession = true)]
 		public bool LogOff()
@@ -159,23 +183,7 @@ namespace ProjectTemplate
         }
 
 
-        [WebMethod/*EnableSession = true)*/] // Enable Session?? If so, remove comment block to add.
-        public string GetRandomComment()
-        {
-            string connectionString = getConString();
-            string query = "SELECT content FROM comments WHERE searchable = 1 ORDER BY RAND() LIMIT 1"; // MySQL syntax
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                MySqlCommand command = new MySqlCommand(query, connection);
-                connection.Open();
-
-                object result = command.ExecuteScalar(); // Use ExecuteScalar for single values
-                return result != null ? result.ToString() : "No comments found.";
-            }
-        }
-
-		[WebMethod(EnableSession = true)]
+        [WebMethod(EnableSession = true)]
 		public Comment[] GetActiveComments()
 		{
 			//check out the return type.  It's an array of Comment objects.  You can look at our custom Comment class to see that it's 

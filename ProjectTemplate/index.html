@@ -7,75 +7,76 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
-	<script type="text/javascript">
+    <script type="text/javascript">
 
-		//we're using a stacked card approach for our main viewing area
-		//this array holds the ids of our cards and
-		//the method allows us to easly switch the interface from one to the other
+        //we're using a stacked card approach for our main viewing area
+        //this array holds the ids of our cards and
+        //the method allows us to easly switch the interface from one to the other
         var contentPanels = ['logonPanel', 'mainPanel', 'responsePanel', 'commentPanel', 'archivedPanel'];
 
-		//this function toggles which panel is showing
-		function showPanel(panelId) {
-			// clearData();
-			for (var i = 0; i < contentPanels.length; i++) {
-				if (panelId == contentPanels[i]) {
-					$("#" + contentPanels[i]).css("visibility", "visible");
-				}
-				else {
-					$("#" + contentPanels[i]).css("visibility", "hidden");
-				}
-			}
-		}
+        //this function toggles which panel is showing
+        function showPanel(panelId) {
+            // clearData();
+            for (var i = 0; i < contentPanels.length; i++) {
+                if (panelId == contentPanels[i]) {
+                    $("#" + contentPanels[i]).css("visibility", "visible");
+                }
+                else {
+                    $("#" + contentPanels[i]).css("visibility", "hidden");
+                }
+            }
+        }
 
-		function LogOn(userId, pass) {
-			//the url of the webservice we will be talking to
-			//CASE SENSITIVE!!
-			var webMethod = "ProjectServices.asmx/LogOn";
-			//the parameters we will pass the service (in json format because curly braces)
-			//note we encode the values for transmission over the web.  All the \'s are just
-			//because we want to wrap our keynames and values in double quotes so we have to
-			//escape the double quotes (because the overall string we're creating is in double quotes!)
-			var parameters = "{\"uid\":\"" + encodeURI(userId) + "\",\"pass\":\"" + encodeURI(pass) + "\"}";
+        function LogOn(userId, pass) {
+            //the url of the webservice we will be talking to
+            //CASE SENSITIVE!!
+            var webMethod = "ProjectServices.asmx/LogOn";
+            //the parameters we will pass the service (in json format because curly braces)
+            //note we encode the values for transmission over the web.  All the \'s are just
+            //because we want to wrap our keynames and values in double quotes so we have to
+            //escape the double quotes (because the overall string we're creating is in double quotes!)
+            var parameters = "{\"uid\":\"" + encodeURI(userId) + "\",\"pass\":\"" + encodeURI(pass) + "\"}";
 
-			//jQuery ajax method
-			$.ajax({
-				//post is more secure than get, and allows
-				//us to send big data if we want.  really just
-				//depends on the way the service you're talking to is set up, though
-				type: "POST",
-				//the url is set to the string we created above
-				url: webMethod,
-				//same with the data
-				data: parameters,
-				//these next two key/value pairs say we intend to talk in JSON format
-				contentType: "application/json; charset=utf-8",
-				dataType: "json",
-				//jQuery sends the data and asynchronously waits for a response.  when it
-				//gets a response, it calls the function mapped to the success key here
-				success: function (msg) {
-					//the server response is in the msg object passed in to the function here
-					//since our logon web method simply returns a true/false, that value is mapped
-					//to a generic property of the server response called d (I assume short for data
-					//but honestly I don't know...)
-					if (msg.d) {
-						//server replied true, so show the landing page: mainPanel
-						showPanel('mainPanel');
-						ShowMenu();
-					}
-					else {
-						//server replied false, so let the user know
-						//the logon failed
-						alert("logon failed");
-					}
-				},
-				error: function (e) {
-					//if something goes wrong in the mechanics of delivering the
-					//message to the server or the server processing that message,
-					//then this function mapped to the error key is executed rather
-					//than the one mapped to the success key.
-					alert("Error in delivering the message to the server or the server processing that message");
-				}
-			});
+            //jQuery ajax method
+            $.ajax({
+                //post is more secure than get, and allows
+                //us to send big data if we want.  really just
+                //depends on the way the service you're talking to is set up, though
+                type: "POST",
+                //the url is set to the string we created above
+                url: webMethod,
+                //same with the data
+                data: parameters,
+                //these next two key/value pairs say we intend to talk in JSON format
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //jQuery sends the data and asynchronously waits for a response.  when it
+                //gets a response, it calls the function mapped to the success key here
+                success: function (msg) {
+                    //the server response is in the msg object passed in to the function here
+                    //since our logon web method simply returns a true/false, that value is mapped
+                    //to a generic property of the server response called d (I assume short for data
+                    //but honestly I don't know...)
+                    if (msg.d) {
+                        //server replied true, so show the landing page: mainPanel
+                        showPanel('mainPanel');
+                        ShowMenu();
+                        skipsRemaining = 3; // Reset skips to 3 
+                    }
+                    else {
+                        //server replied false, so let the user know
+                        //the logon failed
+                        alert("logon failed");
+                    }
+                },
+                error: function (e) {
+                    //if something goes wrong in the mechanics of delivering the
+                    //message to the server or the server processing that message,
+                    //then this function mapped to the error key is executed rather
+                    //than the one mapped to the success key.
+                    alert("Error in delivering the message to the server or the server processing that message");
+                }
+            });
         }
 
         // Function to submit a suggestion
@@ -110,21 +111,21 @@
         }
 
 
-		//just shows the menu
-		function ShowMenu() {
-			$("#menu").css("visibility", "visible");
-		}
+        //just shows the menu
+        function ShowMenu() {
+            $("#menu").css("visibility", "visible");
+        }
 
-		//just hides the menu
-		function HideMenu() {
-			$("#menu").css("visibility", "hidden");
-		}
+        //just hides the menu
+        function HideMenu() {
+            $("#menu").css("visibility", "hidden");
+        }
 
-		//resets the logon inputs
-		function clearLogon() {
-			$('#logonId').val("");
-			$('#logonPassword').val("");
-		}
+        //resets the logon inputs
+        function clearLogon() {
+            $('#logonId').val("");
+            $('#logonPassword').val("");
+        }
 
         //resets comments panel
         function clearCommentsPage() {
@@ -143,46 +144,39 @@
             clearArchivedPage();
         }
 
-		//logs the user off both at the client and at the server
-		function LogOff() {
+        //logs the user off both at the client and at the server
+        function LogOff() {
 
-			var webMethod = "ProjectServices.asmx/LogOff";
-			$.ajax({
-				type: "POST",
-				url: webMethod,
-				contentType: "application/json; charset=utf-8",
-				dataType: "json",
-				success: function (msg) {
-					if (msg.d) {
+            var webMethod = "ProjectServices.asmx/LogOff";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d) {
                         //we logged off, so go back to logon page,
                         showPanel('logonPanel');
                         HideMenu();
                         clearData();
-					}
-					else {
-					}
-				},
-				error: function (e) {
-					alert("Error in delivering the message to the server or the server processing that message");
-				}
-			});
-		}
-
-		//this function executes once jQuery has successfully loaded and is
-		//ready for business.  Usually, if we're wiring up event handlers via jQuery
-		//then this is where they go.
-		jQuery(function () {
-			//when the app loads, show the logon panel to start with!
-			showPanel('logonPanel');
-		});
-
-        // Ensure that the DOM is fully loaded before attaching event listeners
-        $(document).ready(function () {
-            // Attach event handler once
-            $(".randomCommentButton").click(function () {
-                loadRandomComment();
+                    }
+                    else {
+                    }
+                },
+                error: function (e) {
+                    alert("Error in delivering the message to the server or the server processing that message");
+                }
             });
+        }
+
+        //this function executes once jQuery has successfully loaded and is
+        //ready for business.  Usually, if we're wiring up event handlers via jQuery
+        //then this is where they go.
+        jQuery(function () {
+            //when the app loads, show the logon panel to start with!
+            showPanel('logonPanel');
         });
+
 
         // Ensure the DOM is fully loaded before attaching event listeners
         $(document).ready(function () {
@@ -191,15 +185,21 @@
                 loadRandomComment();
             });
 
-            // Event listener for "Skip" button (same functionality for now)
-            $(".skipButton").click(function () {
-                loadRandomComment(); // Same functionality as randomCommentButton for now
+            // Event listener for Skip button
+            $("#skipButton").click(function () {
+                handleSkip();
             });
         });
 
-        // Function that loads a random comment by making an AJAX call
+  
+
+        // Store the current comment to display the same one if the user cancels the skip
+        var currentComment = "";
+        var savedComment = ""; // Variable to save the comment for later use
+
+        // Function to load a random comment from the server
         function loadRandomComment() {
-            // Show the response panel and hide others
+            // Show the response panel and ensure other panels are hidden
             showPanel("responsePanel");
 
             var webMethod = "ProjectServices.asmx/GetRandomComment";
@@ -209,14 +209,16 @@
                 url: webMethod,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                data: JSON.stringify({}),
+                data: JSON.stringify({}), // No additional parameters needed
                 success: function (response) {
-                    // Check if the response contains valid data
+                    // Check if response contains a valid comment
                     if (response.d && typeof response.d === "string" && response.d.trim() !== "") {
-                        // Update the response panel with the new comment
-                        $("#randomCommentDisplay").text(response.d);
+                        currentComment = response.d; // Store the new comment
+                        $("#randomCommentDisplay").text(currentComment); // Display comment
+                        savedComment = currentComment; // Save the comment for later use
+                        console.log("Saved Comment: " + savedComment); // Log the saved comment for debugging
                     } else {
-                        $("#randomCommentDisplay").text("No comments found.");
+                        $("#randomCommentDisplay").text("No comments found."); // Handle empty response
                     }
                 },
                 error: function (xhr, status, error) {
@@ -225,7 +227,34 @@
                 }
             });
         }
-           
+
+        // Track the number of skips remaining
+        var skipsRemaining = 3; // Example initial value
+
+        // Function to handle the skip action
+        function handleSkip() {
+            if (skipsRemaining > 0) {
+                let userConfirmed = confirm("Are you sure you want to skip this comment?");
+
+                if (userConfirmed) {
+                    skipsRemaining--;
+                    loadRandomComment(); // Load a new comment only if the user confirms
+                } else {
+                    // If user cancels, show the same comment again
+                    $("#randomCommentDisplay").text(savedComment);
+                }
+            } else {
+                alert("You have no more skips!");
+                // Ensure the displayed comment remains the same
+                $("#randomCommentDisplay").text(savedComment);
+            }
+        }
+
+        // Function to handle the cancel action
+        $("#cancelButton").on("click", function () {
+            $("#randomCommentDisplay").text(savedComment); // Display the saved comment
+        });
+   
         // array to hold comments and their respective replies and user info for each
         var commentsArray;
 
@@ -430,11 +459,12 @@
             <!-- The div where the random comment will be displayed -->
             <div id="randomCommentDisplay"></div>
 
-            <!-- Load New Comment Button -->
-            <button class="randomCommentButton">Load Random Comment</button>
+            <!-- Add button here to save comment and load next -->
+            
 
             <!-- Skip Button -->
-            <button class="skipButton">Skip</button>
+            <button id="skipButton">Skip</button>
+         
         </div>
 
         <!-- Panel to display active comments and replies -->
