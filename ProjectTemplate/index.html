@@ -1,13 +1,17 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title></title>
-	<!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
-	<!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
+    <!--DO NOT FORGET THIS SCRIPT TAG SO YOU CAN USE JQUERY!!!!!-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
+
 
         //we're using a stacked card approach for our main viewing area
         //this array holds the ids of our cards and
@@ -61,7 +65,7 @@
                         //server replied true, so show the landing page: mainPanel
                         showPanel('mainPanel');
                         ShowMenu();
-                        skipsRemaining = 3; // Reset skips to 3 
+                        skipsRemaining = 3; // Reset skips to 3
                     }
                     else {
                         //server replied false, so let the user know
@@ -176,7 +180,7 @@
                 }
             });
         }
-                
+
         // Ensure the DOM is fully loaded before attaching event listeners
         $(document).ready(function () {
             // Event listener for "Load Random Comment" button
@@ -190,7 +194,7 @@
             });
         });
 
-  
+
 
         // Store the current comment to display the same one if the user cancels the skip
         var currentComment = "";
@@ -231,7 +235,7 @@
                 data: JSON.stringify({}), // No additional parameters needed
                 success: function (response) {
                     // Check if response contains a valid comment
-                    
+
                     console.log("Active comments: " + activeCommentCount); // for testing
                     console.log(skipTrackerArray); // for testing
                     console.log("Skips remaining: " + skipsRemaining); // for testing
@@ -292,7 +296,7 @@
         $("#cancelButton").on("click", function () {
             $("#randomCommentDisplay").text(savedComment); // Display the saved comment
         });
-   
+
         // array to hold comments and their respective replies and user info for each
         var commentsArray;
 
@@ -431,32 +435,106 @@
 
         });
 
-	</script>
-	<!--END OF YOUR OWN JAVASCRIPT-->
-	<!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
-	<style>
-		/* hidden by default */
-		.menu {
-			visibility: hidden;
-		}
+    </script>
+    <!--END OF YOUR OWN JAVASCRIPT-->
+    <!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
+    <style>
+        /*Colors for this project area as follows:
+            dark blue:#002d62
+            light blue:#3ab0ff
+            white:#f5f5f5
+            light green:#00c49a*/
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+
+        /* hidden by default */
+        .menu {
+            visibility: hidden;
+            font-family: "Open Sans", serif;
+            font-optical-sizing: auto;
+            font-weight: 100;
+            font-style: normal;
+            background-color: black;
+            width: 100%;
+        }
+
 
         /* hidden by default */
         .contentPanel {
             visibility: hidden;
             position: absolute;
+            background: linear-gradient(to right, #00c49a, #3ab0ff);
+            width: 100%;
+            height: 100%;
         }
-	</style>
-	<!--END OF YOUR OWN CSS-->
+
+        .title {
+            font-family: "Montserrat", serif;
+            font-size: xx-large;
+            font-weight: 700;
+            font-style: normal;
+            color: #f5f5f5;
+        }
+
+
+        .titleContainer {
+            background-color: black;
+            width: 100%
+        }
+
+        .header {
+            font-family: "Montserrat", serif;
+            font-size: x-large;
+            font-weight: 500;
+            font-style: normal;
+            color: black;
+            background-color: #3ab0ff;
+        }
+
+
+        .body {
+            font-family: "Open Sans", serif;
+            font-size: large;
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        .button {
+            font-family: "Open Sans", serif;
+            font-size: medium;
+            font-weight: 500;
+            font-style: normal;
+            color: #f5f5f5;
+            background-color: black;
+            min-width: 150px;
+        }
+
+        .commentPanel {
+            height: 100%
+        }
+
+        .archivedPanel {
+            height: 100%
+        }
+
+
+
+    </style>
+    <!--END OF YOUR OWN CSS-->
 </head>
 <body>
 
 	<!-- Build Menu Here -->
 	<div class="titleContainer">
-		<span>Feedback!</span>
+		<span class="title">Feedback!</span>
         <div id="menu" class="menu">
-            <button onclick=showActiveComments()>Show Active Comments</button>
-            <button onclick=showArchivedComments()>Show Archived Comments</button>
-            <button onclick=LogOff()>Log Off</button>
+            <button class="button" onclick=showActiveComments()>Show Active Comments</button>
+            <button class="button" onclick=showArchivedComments()>Show Archived Comments</button>
+            <button class="button" onclick=LogOff()>Log Off</button>
             <hr />
         </div>
 	</div>
@@ -470,19 +548,19 @@
     <div class="contentContainer">
 
         <div id="logonPanel" class="contentPanel logonPanel">
-            <div class="logonBox">
+            <div class="logonBox body">
                 <form onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
-                    <div class="left">Log On</div>
+                    <div class="left header">Log On</div>
                     <hr />
                     <div>
-                        ID: <input type="text" id="logonId" />
+                        ID: <input type="text" id="logonId" class="body" />
                     </div>
                     <div>
-                        Pwd: <input type="password" id="logonPassword" />
+                        Pwd: <input type="password" id="logonPassword" class="body" />
                     </div>
                     <hr />
                     <div>
-                        <button type="submit">Go!</button>
+                        <button class="button" type="submit">Go!</button>
                     </div>
                 </form>
             </div>
@@ -490,35 +568,33 @@
 
 
         <div id="mainPanel" class="contentPanel mainPanel">
-            <div class="left">Add contents here!!</div>
+            <div class="left header">This is a placeholder for the Banner!</div>
             <!-- Suggestion Input Box -->
-            <textarea id="suggestionText" placeholder="Enter your suggestion here..."></textarea>
+            <textarea id="suggestionText" class="body" placeholder="Enter your suggestion here..."></textarea>
 
             <!-- Submit Button -->
-            <button onclick="submitSuggestion()">Submit Suggestion</button>
+            <button class="button" onclick="submitSuggestion()">Submit Suggestion</button>
 
             <!-- Button that the user clicks to load a random comment -->
-            <button class="randomCommentButton">Load Random Comment</button>
+            <button class="randomCommentButton button">Load Random Comment</button>
         </div>
 
 
-        <div id="responsePanel" class="randomCommentDisplay responsePanel">
+        <div id="responsePanel" class="responsePanel contentPanel body">
             <!-- The div where the random comment will be displayed -->
             <div id="randomCommentDisplay"></div>
 
             <!-- Add button here to save comment and load next -->
-            
-
             <!-- Skip Button -->
-            <button id="skipButton">Skip</button>
-         
+            <button id="skipButton" class="button">Skip</button>
+
         </div>
 
         <!-- Panel to display active comments and replies -->
-        <div id="commentPanel" class="contentPanel commentPanel"></div>
+        <div id="commentPanel" class="contentPanel commentPanel body"></div>
 
         <!-- Panel to display archived comments and replies -->
-        <div id="archivedPanel" class="contentPanel archivedPanel"></div>
+        <div id="archivedPanel" class="contentPanel archivedPanel body"></div>
     </div>
 
 </body>
