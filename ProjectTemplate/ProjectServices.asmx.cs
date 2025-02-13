@@ -197,6 +197,59 @@ namespace ProjectTemplate
             }
         }
 
+        [WebMethod(EnableSession = true)]
+        public string SubmitReply(string commentContent, string replyContent)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(replyContent))
+                {
+                    return "{ \"success\": false, \"message\": \"Reply cannot be empty.\"}";
+                }
+
+                string connectionString = getConString();
+
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Get the commentID based on the comment content
+                    string queryGetCommentID = "SELECT commentID FROM comments WHERE content = @commentContent LIMIT 1";
+                    int commentID = 0;
+
+                    using (MySqlCommand command = new MySqlCommand(queryGetCommentID, connection))
+                    {
+                        command.Parameters.AddWithValue("@commentContent", commentContent);
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            commentID = Convert.ToInt32(result);
+                        }
+                        else
+                        {
+                            return "{ \"success\": false, \"message\": \"Parent comment not found.\"}";
+                        }
+                    }
+
+                    // Insert the reply anonymously
+                    string queryInsertReply = "INSERT INTO replies (commentID, accountID, content) VALUES (@commentID, @accountID, @replyContent)";
+
+                    using (MySqlCommand command = new MySqlCommand(queryInsertReply, connection))
+                    {
+                        command.Parameters.AddWithValue("@commentID", commentID);
+                        command.Parameters.AddWithValue("@accountID", Session["accountID"]);
+                        command.Parameters.AddWithValue("@replyContent", replyContent);
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                return "{ \"success\": true }";
+            }
+            catch (Exception e)
+            {
+                return "{ \"success\": false, \"message\": \"An unexpected error occurred. Please try again later.\" }";
+            }
+        }
 
         [WebMethod(EnableSession = true)]
 		public Comment[] GetActiveComments()

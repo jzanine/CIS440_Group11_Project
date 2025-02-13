@@ -114,6 +114,44 @@
             });
         }
 
+        // Function to submit a reply to a randomized comment
+        function submitReply() {
+            var replyContent = $("#replyText").val();
+            var parentComment = $("#randomCommentDisplay").text(); // Capture the parent comment content
+
+            if (replyContent.trim() === "") {
+                alert("Please enter a reply.");
+                return;
+            }
+
+            var webMethod = "ProjectServices.asmx/SubmitReply";
+            var parameters = JSON.stringify({ commentContent: parentComment, replyContent: replyContent });
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var response = JSON.parse(msg.d);
+                    if (response.success) {
+                        alert("Reply submitted successfully!");
+                        $("#replyText").val(""); // Clear reply input box
+                    } else {
+                        alert("Submission failed: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("Error connecting to the server.");
+                }
+            });
+        }
+
+        // Attach event listener to submit button
+        $(document).ready(function () {
+            $("#submitReplyButton").click(submitReply);
+        });
 
         //just shows the menu
         function ShowMenu() {
@@ -585,6 +623,15 @@
             <div id="randomCommentDisplay"></div>
 
             <!-- Add button here to save comment and load next -->
+            <!-- Reply Input Box -->
+            <textarea id="replyText" placeholder="Enter your anonymous reply here..."></textarea>
+
+            <!-- Submit Button -->
+            <button id="submitReplyButton">Submit Reply</button>
+
+            <!-- Button to load another random comment -->
+            <button class="randomCommentButton">Next Comment</button>
+
             <!-- Skip Button -->
             <button id="skipButton" class="button">Skip</button>
 
