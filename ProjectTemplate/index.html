@@ -559,7 +559,15 @@
             height: 100%
         }
 
-
+        #randomCommentDisplay {
+            background-color: #3ab0ff;
+            font-family: "Open Sans", serif;
+            font-size: large;
+            font-weight: 600;
+            font-style: normal;
+        }
+ 
+       
 
     </style>
     <!--END OF YOUR OWN CSS-->
@@ -622,15 +630,28 @@
             <!-- The div where the random comment will be displayed -->
             <div id="randomCommentDisplay"></div>
 
+            <hr />
+
+            <div id="rateComment" class="body">
+                <!-- The div where the user selects if a comment is important or not-->
+                <label>Do you think this topic is important?</label>
+                <input type="radio" id="yes" name="important" value="true">
+                <label for="yes">Yes</label>
+                <input type="radio" id="no" name="important" value="false">
+                <label for="no">No</label>
+            </div>
+
+            <hr />
+
             <!-- Add button here to save comment and load next -->
             <!-- Reply Input Box -->
-            <textarea id="replyText" placeholder="Enter your anonymous reply here..."></textarea>
+            <textarea id="replyText" placeholder="Enter your anonymous reply here..."class="body"></textarea>
 
             <!-- Submit Button -->
-            <button id="submitReplyButton">Submit Reply</button>
+            <button id="submitReplyButton" class="button">Submit Reply</button>
 
             <!-- Button to load another random comment -->
-            <button class="randomCommentButton">Next Comment</button>
+            <button class="randomCommentButton button">Next Comment</button>
 
             <!-- Skip Button -->
             <button id="skipButton" class="button">Skip</button>
