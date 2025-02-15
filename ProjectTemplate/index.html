@@ -357,9 +357,17 @@
                                     count++;
                                 }
                             }
+                            var priority;
+                            if (commentsArray[i].priority == 0) {
+                                priority = "LOW"
+                            }
+                            else {
+                                priority = "HIGH"
+                            }
                             // Create the base comment HTML structure
                             var comment =
                                 "<div id='comment" + i + "'>" +
+                                "<p>PRIORITY: " + priority + "</p>" +
                                 "<p>" + commentsArray[i].comment_firstname + " " +
                                 commentsArray[i].comment_lastname + ": " +
                                 commentsArray[i].comment_content + "</p>" +
@@ -384,7 +392,18 @@
                                 // Delete and Archive button PLACEHOLDERS
                                 "<button onclick=archiveComment(" + commentsArray[i].commentID + ")>Archive</button>" +
                                 "<button onclick=deleteComment(" + commentsArray[i].commentID + ")>Delete</button>"
+                                //"<button >Toggle Priority</button>"
                             );
+                            if (commentsArray[i].priority == 1) {
+                                $("#comment" + i).append(
+                                    "<button >Set LOW Priority</button>"
+                                );
+                            }
+                            if (commentsArray[i].priority == 0) {
+                                $("#comment" + i).append(
+                                    "<button >Set HIGH Priority</button>"
+                                );
+                            }
                             // Skip number of replies to avoid repeating them (i.e. we already added them above)
                             i = i + count;
                         }
@@ -420,9 +439,17 @@
                                     count++;
                                 }
                             }
+                            var priority;
+                            if (commentsArray[i].priority == 0) {
+                                priority = "LOW"
+                            }
+                            else {
+                                priority = "HIGH"
+                            }
                             // Create the comment HTML structure
                             var comment =
                                 "<div id='archcomment" + i + "'>" +
+                                "<p>PRIORITY: " + priority + "</p>" +
                                 "<p>" + commentsArray[i].comment_firstname + " " +
                                 commentsArray[i].comment_lastname + ": " +
                                 commentsArray[i].comment_content + "</p>" +
@@ -447,7 +474,18 @@
                                 // Delete & Unarchive button PLACEHOLDERS
                                 "<button onclick=unArchiveComment(" + commentsArray[i].commentID + ")>Unarchive</button>" +
                                 "<button onclick=deleteComment(" + commentsArray[i].commentID + ")>Delete</button>"
+                                //"<button >Toggle Priority</button>"
                             );
+                            if (commentsArray[i].priority == 1) {
+                                $("#archcomment" + i).append(
+                                    "<button >Set LOW Priority</button>"
+                                );
+                            }
+                            if (commentsArray[i].priority == 0) {
+                                $("#archcomment" + i).append(
+                                    "<button >Set HIGH Priority</button>"
+                                );
+                            }
                             // Skip number of replies to avoid repeating them (i.e. we already added them above)
                             i = i + count;
                         }

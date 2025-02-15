@@ -246,7 +246,8 @@ namespace ProjectTemplate
 						"r.replyID, " +
 						"r.content AS reply_content, " +
 						"a2.firstname AS reply_firstname, " +
-						"a2.lastname AS reply_lastname " +
+						"a2.lastname AS reply_lastname, " +
+						"priority " +
 					"FROM " +
 						"comments c " +
 					"JOIN " +
@@ -258,6 +259,7 @@ namespace ProjectTemplate
 					"WHERE " +
 						"c.searchable = 1 " + // important part: distinquishes between active and archived
 					"ORDER BY " +
+						"priority DESC, " +
 						"c.commentID, " +
 						"r.replyID";
 
@@ -286,7 +288,8 @@ namespace ProjectTemplate
 						replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
 						reply_content = sqlDt.Rows[i]["reply_content"] != DBNull.Value ? sqlDt.Rows[i]["reply_content"].ToString() : string.Empty,
 						reply_firstname = sqlDt.Rows[i]["reply_firstname"] != DBNull.Value ? sqlDt.Rows[i]["reply_firstname"].ToString() : string.Empty,
-						reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty
+						reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty,
+						priority = sqlDt.Rows[i]["priority"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["priority"]) : 0
 					});
 				}
 				//convert the list of comments to an array and return!
@@ -322,7 +325,8 @@ namespace ProjectTemplate
 						"r.replyID, " +
 						"r.content AS reply_content, " +
 						"a2.firstname AS reply_firstname, " +
-						"a2.lastname AS reply_lastname " +
+						"a2.lastname AS reply_lastname, " +
+						"priority " +
 					"FROM " +
 						"comments c " +
 					"JOIN " +
@@ -334,6 +338,7 @@ namespace ProjectTemplate
 					"WHERE " +
 						"c.searchable = 0 " + // important part: distinquishes between active and archived
 					"ORDER BY " +
+						"priority DESC, " +
 						"c.commentID, " +
 						"r.replyID";
 
@@ -362,7 +367,8 @@ namespace ProjectTemplate
 						replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
 						reply_content = sqlDt.Rows[i]["reply_content"] != DBNull.Value ? sqlDt.Rows[i]["reply_content"].ToString() : string.Empty,
 						reply_firstname = sqlDt.Rows[i]["reply_firstname"] != DBNull.Value ? sqlDt.Rows[i]["reply_firstname"].ToString() : string.Empty,
-						reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty
+						reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty,
+						priority = sqlDt.Rows[i]["priority"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["priority"]) : 0
 					});
 				}
 				//convert the list of comments to an array and return!
@@ -607,5 +613,17 @@ namespace ProjectTemplate
 				sqlConnection.Close();
 			}
 		}
+
+		[WebMethod(EnableSession = true)]
+		public void SetHighPriorityComment(string id)
+        {
+
+        }
+
+		[WebMethod(EnableSession = true)]
+		public void SetLowPriorityComment(string id)
+        {
+
+        }
 	}
 }
