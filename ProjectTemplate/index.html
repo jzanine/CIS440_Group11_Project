@@ -113,7 +113,6 @@
                 }
             });
         }
-
         // Function to submit a reply to a randomized comment
         function submitReply() {
             var replyContent = $("#replyText").val();
@@ -138,6 +137,7 @@
                     if (response.success) {
                         alert("Reply submitted successfully!");
                         $("#replyText").val(""); // Clear reply input box
+                        loadRandomComment(); // Load a new random comment
                     } else {
                         alert("Submission failed: " + response.message);
                     }
@@ -148,10 +148,6 @@
             });
         }
 
-        // Attach event listener to submit button
-        $(document).ready(function () {
-            $("#submitReplyButton").click(submitReply);
-        });
 
         //just shows the menu
         function ShowMenu() {
@@ -261,7 +257,6 @@
 
         // Function to load a random comment from the server
         function loadRandomComment() {
-
             getCommentCount();
             var webMethod = "ProjectServices.asmx/GetRandomComment";
 
@@ -273,7 +268,6 @@
                 data: JSON.stringify({}), // No additional parameters needed
                 success: function (response) {
                     // Check if response contains a valid comment
-
                     console.log("Active comments: " + activeCommentCount); // for testing
                     console.log(skipTrackerArray); // for testing
                     console.log("Skips remaining: " + skipsRemaining); // for testing
@@ -287,17 +281,14 @@
                                 console.log("Saved Comment: " + savedComment); // Log the saved comment for debugging
                                 // Show the response panel and ensure other panels are hidden
                                 showPanel("responsePanel");
-                            }
-                            else {
+                            } else {
                                 // Load another comment if it's a repeat
                                 loadRandomComment();
                             }
-                        }
-                        else {
+                        } else {
                             $("#randomCommentDisplay").text("No comments found."); // Handle empty response
                         }
-                    }
-                    else {
+                    } else {
                         $("#randomCommentDisplay").text("No comments found.");
                     }
                 },
@@ -308,6 +299,10 @@
             });
         }
 
+        // Attach event listener to submit button
+        $(document).ready(function () {
+            $("#submitReplyButton").click(submitReply);
+        });
         // Track the number of skips remaining
         var skipsRemaining = 3; // Example initial value
 
@@ -649,9 +644,6 @@
 
             <!-- Submit Button -->
             <button id="submitReplyButton" class="button">Submit Reply</button>
-
-            <!-- Button to load another random comment -->
-            <button class="randomCommentButton button">Next Comment</button>
 
             <!-- Skip Button -->
             <button id="skipButton" class="button">Skip</button>
