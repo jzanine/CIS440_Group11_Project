@@ -36,34 +36,6 @@ namespace ProjectTemplate
 		}
         ////////////////////////////////////////////////////////////////////////
 
-        /////////////////////////////////////////////////////////////////////////
-        //don't forget to include this decoration above each method that you want
-        //to be exposed as a web service!
-        //[WebMethod(EnableSession = true)]
-        /////////////////////////////////////////////////////////////////////////
-        //public string TestConnection()
-        //{
-        //	try
-        //	{
-        //		string testQuery = "select * from accounts";
-
-        //		////////////////////////////////////////////////////////////////////////
-        //		///here's an example of using the getConString method!
-        //		////////////////////////////////////////////////////////////////////////
-        //		MySqlConnection con = new MySqlConnection(getConString());
-        //		////////////////////////////////////////////////////////////////////////
-
-        //		MySqlCommand cmd = new MySqlCommand(testQuery, con);
-        //		MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
-        //		DataTable table = new DataTable();
-        //		adapter.Fill(table);
-        //		return "Success!";
-        //	}
-        //	catch (Exception e)
-        //	{
-        //		return "Something went wrong, please check your credentials and db name and try again.  Error: "+e.Message;
-        //	}
-        //}
         public class SkipsResponse
         {
             public bool Success { get; set; }
@@ -400,6 +372,239 @@ namespace ProjectTemplate
 			{
 				//if they're not logged in or not an admin, return an empty array
 				return new Comment[0];
+			}
+		}
+
+		[WebMethod(EnableSession = true)]
+		public void ArchiveComment(string id)
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "UPDATE comments SET searchable = 0 WHERE commentID=@idValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+
+		}
+
+		[WebMethod(EnableSession = true)]
+		public void UnArchiveComment(string id)
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "UPDATE comments SET searchable = 1 WHERE commentID=@idValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+		}
+
+		[WebMethod(EnableSession = true)]
+		public void DeleteComment(string id)
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "DELETE from comments WHERE commentID=@idValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+		}
+
+		[WebMethod(EnableSession = true)]
+		public Account[] GetUsers()
+		{
+			//WE ONLY SHARE USER INFO WITH LOGGED IN ADMINS!
+			if (Session["accountID"] != null && Convert.ToInt32(Session["admin"]) == 1)
+			{
+				DataTable sqlDt = new DataTable("accounts");
+
+				string sqlConnectString = getConString();
+				string sqlSelect =
+					"SELECT " +
+						"accountID, " +
+						"firstname, " +
+						"lastname, " +
+						"admin, " +
+						"active " +
+					"FROM " +
+						"accounts " +
+					"ORDER BY " +
+						"admin DESC, " +
+						"lastname, " +
+						"firstname";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				//gonna use this to fill a data table
+				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+
+				//filling the data table
+				sqlDa.Fill(sqlDt);
+
+				//loop through each row in the datasets, creating instances
+				//of our container classes: Accounts, Comments, Replies.  Fill each with
+				//data from the rows, then dump them in a list.
+				List<Account> accounts = new List<Account>();
+				for (int i = 0; i < sqlDt.Rows.Count; i++)
+				{
+					accounts.Add(new Account
+					{
+						accountID = sqlDt.Rows[i]["accountID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["accountID"]) : 0,
+						firstname = sqlDt.Rows[i]["firstname"] != DBNull.Value ? sqlDt.Rows[i]["firstname"].ToString() : string.Empty,
+						lastname = sqlDt.Rows[i]["lastname"] != DBNull.Value ? sqlDt.Rows[i]["lastname"].ToString() : string.Empty,
+						admin = sqlDt.Rows[i]["admin"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["admin"]) : 0,
+						active = sqlDt.Rows[i]["active"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["active"]) : 0
+					});
+				}
+				//convert the list of accounts to an array and return!
+				return accounts.ToArray();
+			}
+			else
+			{
+				//if they're not logged in or not an admin, return an empty array
+				return new Account[0];
+			}
+		}
+
+		[WebMethod(EnableSession = true)]
+		public void DeactivateAccount(string id)
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "UPDATE accounts SET active = 0 WHERE accountID=@idValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+		}
+
+		[WebMethod(EnableSession = true)]
+		public void ActivateAccount(string id)
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "UPDATE accounts SET active = 1 WHERE accountID=@idValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+		}
+
+		[WebMethod(EnableSession = true)]
+		public void DemoteAdmin(string id)
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "UPDATE accounts SET admin = 0 WHERE accountID=@idValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+		}
+
+		[WebMethod(EnableSession = true)]
+		public void PromoteAdmin(string id)
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "UPDATE accounts SET admin = 1 WHERE accountID=@idValue";
+
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
 			}
 		}
 	}

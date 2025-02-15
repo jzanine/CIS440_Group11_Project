@@ -15,7 +15,7 @@ namespace ProjectTemplate
 		public string pass;
 		public string firstname;
 		public string lastname;
-		public Boolean admin;
-		public Boolean active;
+		public int admin; // changed from Boolean type
+		public int active; // changed from Boolean type
 	}
 }
