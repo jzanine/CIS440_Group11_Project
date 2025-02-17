@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.Web.Script.Services;
 
+
 namespace ProjectTemplate
 {
 	[WebService(Namespace = "http://tempuri.org/")]
