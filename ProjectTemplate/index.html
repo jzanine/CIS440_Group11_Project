@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -12,6 +13,17 @@
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
 
+        //var menuPanels = ['adminMenu', 'userMenu']
+        //function showMenu(menuId) {
+        //    for (var i = 0; i < menuPanels.length; i++) {
+        //        if (menuId == menuPanels[i]) {
+        //            $("#" + menuPanels[i]).css("visibility", "visible");
+        //        }
+        //        else {
+        //            $("#" + menuPanels[i]).css("visibility", "hidden");
+        //        }
+        //    }
+        //}
 
         //we're using a stacked card approach for our main viewing area
         //this array holds the ids of our cards and
@@ -29,6 +41,28 @@
                     $("#" + contentPanels[i]).css("visibility", "hidden");
                 }
             }
+        }
+
+        function isAdmin() {
+            var webMethod = "ProjectServices.asmx/IsAdmin";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d) {
+                        $("#menu").css("visibility", "visible");
+                    }
+                    else {
+                        $("#menu").css("visibility", "visible");
+                        $(".adminOnly").css("visibility", "hidden");
+                    }
+                },
+                error: function (e) {
+                    alert("Error in delivering the message to the server or the server processing that message");
+                }
+            });
         }
 
         function LogOn(userId, pass) {
@@ -61,21 +95,17 @@
                     //since our logon web method simply returns a true/false, that value is mapped
                     //to a generic property of the server response called d (I assume short for data
                     //but honestly I don't know...)
-                    if (msg.d.success) {
-						if (msg.d.isAdmin) {
-							//shows admin and admin title container
-							showPanel('mainPanel');
-							document.getElementById('adminTitleContainer').style.display = 'block';
-                    		document.getElementById('userTitleContainer').style.display = 'none';
-						} else {
-							showPanel('mainPanel');
-							document.getElementById('userTitleContainer').style.display = 'block';
-                    		document.getElementById('adminTitleContainer').style.display = 'none';
-						}
-						//ShowMenu();
-					} else {
-						alert("Logon failed");
-					}
+                    if (msg.d) {
+                        //server replied true, so show the landing page: mainPanel
+                        showPanel('mainPanel');
+                        ShowMenu();                 
+                        skipsRemaining = 3; // Reset skips to 3
+                    }
+                    else {
+                        //server replied false, so let the user know
+                        //the logon failed
+                        alert("logon failed");
+                    }
                 },
                 error: function (e) {
                     //if something goes wrong in the mechanics of delivering the
@@ -155,12 +185,13 @@
 
         //just shows the menu
         function ShowMenu() {
-            $("#menu").css("visibility", "visible");
+            //$("#menu").css("visibility", "visible");
+            isAdmin();
         }
 
         //just hides the menu
         function HideMenu() {
-            $("#menu").css("visibility", "hidden");
+            $(".menu").css("visibility", "hidden");
         }
 
         //resets the logon inputs
@@ -177,6 +208,10 @@
         // resets archived comments panel
         function clearArchivedPage() {
             document.getElementById("archivedPanel").innerHTML = "";
+        }
+
+        function clearAccountsPage() {
+            document.getElementById("accountPanel").innerHTML = "";
         }
 
         function clearResponsePanel() {
@@ -206,9 +241,6 @@
                 dataType: "json",
                 success: function (msg) {
                     if (msg.d) {
-                        // Hide both title containers
-                        document.getElementById('adminTitleContainer').style.display = 'none';
-                        document.getElementById('userTitleContainer').style.display = 'none';
                         //we logged off, so go back to logon page,
                         showPanel('logonPanel');
                         HideMenu();
@@ -403,12 +435,12 @@
                             );
                             if (commentsArray[i].priority == 1) {
                                 $("#comment" + i).append(
-                                    "<button >Set LOW Priority</button>"
+                                    "<button onclick=setLowPriorityComment(" + commentsArray[i].commentID + ")>Set LOW Priority</button>"
                                 );
                             }
                             if (commentsArray[i].priority == 0) {
                                 $("#comment" + i).append(
-                                    "<button >Set HIGH Priority</button>"
+                                    "<button onclick=setHighPriorityComment(" + commentsArray[i].commentID + ")>Set HIGH Priority</button>"
                                 );
                             }
                             // Skip number of replies to avoid repeating them (i.e. we already added them above)
@@ -485,12 +517,12 @@
                             );
                             if (commentsArray[i].priority == 1) {
                                 $("#archcomment" + i).append(
-                                    "<button >Set LOW Priority</button>"
+                                    "<button onclick=setLowPriorityComment(" + commentsArray[i].commentID + ")>Set LOW Priority</button>"
                                 );
                             }
                             if (commentsArray[i].priority == 0) {
                                 $("#archcomment" + i).append(
-                                    "<button >Set HIGH Priority</button>"
+                                    "<button onclick=setHighPriorityComment(" + commentsArray[i].commentID + ")>Set HIGH Priority</button>"
                                 );
                             }
                             // Skip number of replies to avoid repeating them (i.e. we already added them above)
@@ -674,7 +706,7 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
-                        // refresh user list 
+                        // refresh user list
                         showUsers();
                     },
                     error: function (e) {
@@ -696,7 +728,7 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
-                        // refresh user list 
+                        // refresh user list
                         showUsers();
                     },
                     error: function (e) {
@@ -718,7 +750,7 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
-                        // refresh user list 
+                        // refresh user list
                         showUsers();
                     },
                     error: function (e) {
@@ -740,7 +772,7 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
-                        // refresh user list 
+                        // refresh user list
                         showUsers();
                     },
                     error: function (e) {
@@ -748,6 +780,58 @@
                     }
                 });
             }
+        }
+
+        function setHighPriorityComment(commentID) {
+
+            var webMethod = "ProjectServices.asmx/SetHighPriorityComment";
+            var parameters = "{\"id\":\"" + encodeURI(commentID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var vis = window.getComputedStyle(document.getElementById('archivedPanel')).visibility === 'visible';
+                    if (vis) {
+                        showArchivedComments();
+                    }
+                    else {
+                        showActiveComments();
+                    }
+                },
+                error: function (e) {
+                    alert("Error in delivering the message to the server or the server processing that message");
+                }
+            });
+
+        }
+
+        function setLowPriorityComment(commentID) {
+
+            var webMethod = "ProjectServices.asmx/SetLowPriorityComment";
+            var parameters = "{\"id\":\"" + encodeURI(commentID) + "\"}";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var vis = window.getComputedStyle(document.getElementById('archivedPanel')).visibility === 'visible';
+                    if (vis) {
+                        showArchivedComments();
+                    }
+                    else {
+                        showActiveComments();
+                    }
+                },
+                error: function (e) {
+                    alert("Error in delivering the message to the server or the server processing that message");
+                }
+            });
+
         }
 
         //this function executes once jQuery has successfully loaded and is
@@ -786,6 +870,14 @@
             width: 100%;
         }
 
+        /*#userMenu {
+            position: absolute;
+        }
+
+        #adminMenu {
+            position: absolute;
+        }*/
+
 
         /* visibility hidden by default */
         .contentPanel {
@@ -807,7 +899,7 @@
 
         .titleContainer {
             background-color: black;
-            width: 100%
+            width: 100%;
         }
 
         .header {
@@ -852,37 +944,45 @@
             font-weight: 600;
             font-style: normal;
         }
- 
-       
-
     </style>
     <!--END OF YOUR OWN CSS-->
 </head>
 <body>
 
-	<!-- Build Menu Here -->
-    <div id="adminTitleContainer" class="titleContainer" style="display: none;">
-        <span>Welcome Admin</span>
-            <button class="button" onclick=showActiveComments()>Show Active Comments</button>
-            <button class="button" onclick=showArchivedComments()>Show Archived Comments</button>
-            <button class="button" onclick=LogOff() style="float: right;">Log Out</button>
+    <!-- Build Menu Here -->
+    <!--<span class="title menu">Feedback!</span>-->
+    <!-- <div id="menu" class="menu"> -->
+    <!--<div id="adminMenu" class="titleContainer menu">
+        <button class="button" onclick=showActiveComments()>Show Active Comments</button>
+        <button class="button" onclick=showArchivedComments()>Show Archived Comments</button>
+        <button class="button" onclick=showUsers()>User List</button>
+        <button class="button" onclick=LogOff()>Log Off</button>
+        <hr />
+    </div>
+
+    <div id="userMenu" class="titleContainer menu">
+        <button class="button" onclick=LogOff()>Log Off</button>
+        <hr />
+    </div>-->
+
+    <div class="titleContainer">
+        <span class="title">Feedback!</span>
+        <div id="menu" class="menu">
+            <button class="button" onclick=LogOff()>Log Off</button>
+            <button class="button adminOnly" onclick=showActiveComments()>Show Active Comments</button>
+            <button class="button adminOnly" onclick=showArchivedComments()>Show Archived Comments</button>
+            <button class="button adminOnly" onclick=showUsers()>User List</button>
             <hr />
         </div>
-	</div>
+    </div>
 
-	<div id="userTitleContainer" class="titleContainer" style="display: none;">
-        <span>Welcome User</span>
-		<button class="button" onclick=logOff() style="float: right;">Log Out</button>
-            <hr />
-        </div>
-	</div>
 
-	<!--
-		we're using a stacked card approach for our main viewing area
-		add cards within contentContainer array (above in JavaScript section) as individual divs
-		!! DON'T FORGET TO ADD DIV ID TO JAVASCRIPT ARRAY: contentPanels !!
-		that method allows us to easly switch the interface from one to the other
-	 -->
+    <!--
+        we're using a stacked card approach for our main viewing area
+        add cards within contentContainer array (above in JavaScript section) as individual divs
+        !! DON'T FORGET TO ADD DIV ID TO JAVASCRIPT ARRAY: contentPanels !!
+        that method allows us to easly switch the interface from one to the other
+     -->
     <div class="contentContainer">
 
         <div id="logonPanel" class="contentPanel logonPanel">
