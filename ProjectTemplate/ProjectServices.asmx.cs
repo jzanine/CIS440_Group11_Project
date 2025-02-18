@@ -74,7 +74,7 @@ namespace ProjectTemplate
 		}
 
 		[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
-		public bool LogOn(string uid, string pass)
+		public LogonResponse LogOn(string uid, string pass)
 		{
 			//we return this flag to tell them if they logged in or not
 			bool success = false;
@@ -116,7 +116,13 @@ namespace ProjectTemplate
 				Session["admin"] = sqlDt.Rows[0]["admin"];
 				success = true;
 				isAdmin = Convert.ToBoolean(sqlDt.Rows[0]["admin"]);
+				//isAdmin = sqlDt.Rows[0]["admin"] != DBNull.Value && Convert.ToBoolean(sqlDt.Rows[0]["admin"]);
 
+			}
+			else
+			{
+				success = false;
+				isAdmin = false;
 			}
 			//return the result!
 			return new LogonResponse { success = success, isAdmin = isAdmin };
