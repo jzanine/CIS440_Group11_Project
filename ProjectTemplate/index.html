@@ -41,6 +41,7 @@
                 success: function (msg) {
                     if (msg.d) {
                         $("#menu").css("visibility", "visible");
+                        $(".adminOnly").css("visibility", "visible");
                     }
                     else {
                         $("#menu").css("visibility", "visible");
@@ -180,6 +181,7 @@
         //just hides the menu
         function HideMenu() {
             $(".menu").css("visibility", "hidden");
+            $(".adminOnly").css("visibility", "hidden");
         }
 
         //resets the logon inputs
