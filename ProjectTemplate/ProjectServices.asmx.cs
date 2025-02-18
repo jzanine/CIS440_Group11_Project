@@ -78,6 +78,7 @@ namespace ProjectTemplate
 		{
 			//we return this flag to tell them if they logged in or not
 			bool success = false;
+			bool isAdmin = false;
 
 			//our connection string comes from our web.config file like we talked about earlier
 			string sqlConnectString = getConString();
