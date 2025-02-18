@@ -114,9 +114,17 @@ namespace ProjectTemplate
 				Session["accountID"] = sqlDt.Rows[0]["accountID"];
 				Session["admin"] = sqlDt.Rows[0]["admin"];
 				success = true;
+				isAdmin = Convert.ToBoolean(sqlDt.Rows[0]["admin"]);
+
 			}
 			//return the result!
-			return success;
+			return new LogonResponse { success = success, isAdmin = isAdmin };
+		}
+
+		public class LogonResponse
+		{
+			public bool success { get; set; }
+			public bool isAdmin { get; set; }
 		}
 
 

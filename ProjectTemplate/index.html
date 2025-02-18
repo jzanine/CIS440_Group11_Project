@@ -61,17 +61,21 @@
                     //since our logon web method simply returns a true/false, that value is mapped
                     //to a generic property of the server response called d (I assume short for data
                     //but honestly I don't know...)
-                    if (msg.d) {
-                        //server replied true, so show the landing page: mainPanel
-                        showPanel('mainPanel');
-                        ShowMenu();
-                        skipsRemaining = 3; // Reset skips to 3
-                    }
-                    else {
-                        //server replied false, so let the user know
-                        //the logon failed
-                        alert("logon failed");
-                    }
+                    if (msg.d.success) {
+						if (msg.d.isAdmin) {
+							//shows admin and admin title container
+							showPanel('mainPanel');
+							document.getElementById('adminTitleContainer').style.display = 'block';
+                    		document.getElementById('userTitleContainer').style.display = 'none';
+						} else {
+							showPanel('mainPanel');
+							document.getElementById('userTitleContainer').style.display = 'block';
+                    		document.getElementById('adminTitleContainer').style.display = 'none';
+						}
+						//ShowMenu();
+					} else {
+						alert("Logon failed");
+					}
                 },
                 error: function (e) {
                     //if something goes wrong in the mechanics of delivering the
@@ -206,6 +210,9 @@
                 dataType: "json",
                 success: function (msg) {
                     if (msg.d) {
+                        // Hide both title containers
+                        document.getElementById('adminTitleContainer').style.display = 'none';
+                        document.getElementById('userTitleContainer').style.display = 'none';
                         //we logged off, so go back to logon page,
                         showPanel('logonPanel');
                         HideMenu();
@@ -910,13 +917,18 @@
 <body>
 
 	<!-- Build Menu Here -->
-	<div class="titleContainer">
-		<span class="title">Feedback!</span>
-        <div id="menu" class="menu">
+    <div id="adminTitleContainer" class="titleContainer" style="display: none;">
+        <span>Welcome Admin</span>
             <button class="button" onclick=showActiveComments()>Show Active Comments</button>
             <button class="button" onclick=showArchivedComments()>Show Archived Comments</button>
-            <button class="button" onclick=showUsers()>User List</button>
-            <button class="button" onclick=LogOff()>Log Off</button>
+            <button class="button" onclick=LogOff() style="float: right;">Log Out</button>
+            <hr />
+        </div>
+	</div>
+
+	<div id="userTitleContainer" class="titleContainer" style="display: none;">
+        <span>Welcome User</span>
+		<button class="button" onclick=logOff() style="float: right;">Log Out</button>
             <hr />
         </div>
 	</div>
