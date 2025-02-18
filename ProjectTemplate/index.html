@@ -179,10 +179,6 @@
             document.getElementById("archivedPanel").innerHTML = "";
         }
 
-        function clearAccountsPage() {
-            document.getElementById("accountPanel").innerHTML = "";
-        }
-
         function clearResponsePanel() {
             document.getElementById("randomCommentDisplay").innerHTML = "";
             skipTrackerArray = [];
@@ -407,12 +403,12 @@
                             );
                             if (commentsArray[i].priority == 1) {
                                 $("#comment" + i).append(
-                                    "<button onclick=setLowPriorityComment(" + commentsArray[i].commentID + ")>Set LOW Priority</button>"
+                                    "<button >Set LOW Priority</button>"
                                 );
                             }
                             if (commentsArray[i].priority == 0) {
                                 $("#comment" + i).append(
-                                    "<button onclick=setHighPriorityComment(" + commentsArray[i].commentID + ")>Set HIGH Priority</button>"
+                                    "<button >Set HIGH Priority</button>"
                                 );
                             }
                             // Skip number of replies to avoid repeating them (i.e. we already added them above)
@@ -489,12 +485,12 @@
                             );
                             if (commentsArray[i].priority == 1) {
                                 $("#archcomment" + i).append(
-                                    "<button onclick=setLowPriorityComment(" + commentsArray[i].commentID + ")>Set LOW Priority</button>"
+                                    "<button >Set LOW Priority</button>"
                                 );
                             }
                             if (commentsArray[i].priority == 0) {
                                 $("#archcomment" + i).append(
-                                    "<button onclick=setHighPriorityComment(" + commentsArray[i].commentID + ")>Set HIGH Priority</button>"
+                                    "<button >Set HIGH Priority</button>"
                                 );
                             }
                             // Skip number of replies to avoid repeating them (i.e. we already added them above)
@@ -752,58 +748,6 @@
                     }
                 });
             }
-        }
-
-        function setHighPriorityComment(commentID) {
-            
-            var webMethod = "ProjectServices.asmx/SetHighPriorityComment";
-            var parameters = "{\"id\":\"" + encodeURI(commentID) + "\"}";
-            $.ajax({
-                type: "POST",
-                url: webMethod,
-                data: parameters,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    var vis = window.getComputedStyle(document.getElementById('archivedPanel')).visibility === 'visible';
-                    if (vis) {
-                        showArchivedComments();
-                    }
-                    else {
-                        showActiveComments();
-                    }
-                },
-                error: function (e) {
-                    alert("Error in delivering the message to the server or the server processing that message");
-                }
-            });
-            
-        }
-
-        function setLowPriorityComment(commentID) {
-
-            var webMethod = "ProjectServices.asmx/SetLowPriorityComment";
-            var parameters = "{\"id\":\"" + encodeURI(commentID) + "\"}";
-            $.ajax({
-                type: "POST",
-                url: webMethod,
-                data: parameters,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    var vis = window.getComputedStyle(document.getElementById('archivedPanel')).visibility === 'visible';
-                    if (vis) {
-                        showArchivedComments();
-                    }
-                    else {
-                        showActiveComments();
-                    }
-                },
-                error: function (e) {
-                    alert("Error in delivering the message to the server or the server processing that message");
-                }
-            });
-
         }
 
         //this function executes once jQuery has successfully loaded and is

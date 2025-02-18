@@ -632,51 +632,13 @@ namespace ProjectTemplate
 		[WebMethod(EnableSession = true)]
 		public void SetHighPriorityComment(string id)
         {
-			if (Convert.ToInt32(Session["admin"]) == 1)
-			{
-				string sqlConnectString = getConString();
-				string sqlSelect = "UPDATE comments SET priority = 1 WHERE commentID=@idValue";
 
-				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
-
-				sqlConnection.Open();
-				try
-				{
-					sqlCommand.ExecuteNonQuery();
-				}
-				catch (Exception e)
-				{
-				}
-				sqlConnection.Close();
-			}
-		}
+        }
 
 		[WebMethod(EnableSession = true)]
 		public void SetLowPriorityComment(string id)
         {
-			if (Convert.ToInt32(Session["admin"]) == 1)
-			{
-				string sqlConnectString = getConString();
-				string sqlSelect = "UPDATE comments SET priority = 0 WHERE commentID=@idValue";
 
-				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
-
-				sqlConnection.Open();
-				try
-				{
-					sqlCommand.ExecuteNonQuery();
-				}
-				catch (Exception e)
-				{
-				}
-				sqlConnection.Close();
-			}
-		}
+        }
 	}
 }
