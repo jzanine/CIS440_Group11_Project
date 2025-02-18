@@ -223,6 +223,66 @@ namespace ProjectTemplate
                 return "{ \"success\": false, \"message\": \"An unexpected error occurred. Please try again later.\" }";
             }
         }
+[WebMethod(EnableSession = true)]
+public string SubmitImportance(string commentContent, int important)
+{
+    try
+    {
+        string connectionString = getConString();
+
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            // Get the commentID based on the comment content
+            string queryGetCommentID = "SELECT commentID FROM comments WHERE content = @commentContent LIMIT 1";
+            int commentID = 0;
+
+            using (MySqlCommand command = new MySqlCommand(queryGetCommentID, connection))
+            {
+                command.Parameters.AddWithValue("@commentContent", commentContent);
+                object result = command.ExecuteScalar();
+                if (result != null)
+                {
+                    commentID = Convert.ToInt32(result);
+                }
+                else
+                {
+                    return "{ \"success\": false, \"message\": \"Parent comment not found.\"}";
+                }
+            }
+
+            // Log the retrieved commentID for debugging
+            Console.WriteLine("Retrieved commentID: " + commentID);
+
+            // Update the important column in the replies table
+            string queryUpdateImportance = "UPDATE replies SET important = @important WHERE commentID = @commentID";
+
+            using (MySqlCommand command = new MySqlCommand(queryUpdateImportance, connection))
+            {
+                command.Parameters.AddWithValue("@important", important);
+                command.Parameters.AddWithValue("@commentID", commentID);
+                int rowsAffected = command.ExecuteNonQuery();
+
+                // Log the number of rows affected for debugging
+                Console.WriteLine("Rows affected: " + rowsAffected);
+
+                if (rowsAffected == 0)
+                {
+                    return "{ \"success\": false, \"message\": \"Failed to update importance.\"}";
+                }
+            }
+        }
+
+        return "{ \"success\": true }";
+    }
+    catch (Exception e)
+    {
+        // Log the exception for debugging
+        Console.WriteLine("Exception: " + e.Message);
+        return "{ \"success\": false, \"message\": \"An unexpected error occurred. Please try again later.\" }";
+    }
+}
 
         [WebMethod(EnableSession = true)]
 		public Comment[] GetActiveComments()

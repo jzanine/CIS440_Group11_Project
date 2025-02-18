@@ -147,7 +147,40 @@
                 }
             });
         }
+        // Function to submit the importance value for a comment
+        function submitImportance() {
+            var importanceValue = $("input[name='important']:checked").val(); // Get the selected radio button value
+            var parentComment = $("#randomCommentDisplay").text(); // Capture the parent comment content
 
+            if (!importanceValue) {
+                alert("Please select an importance value.");
+                return;
+            }
+
+            var webMethod = "ProjectServices.asmx/SubmitImportance";
+            var parameters = JSON.stringify({ commentContent: parentComment, important: parseInt(importanceValue) });
+
+            console.log("Submitting importance:", parameters); // Log the parameters for debugging
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var response = JSON.parse(msg.d);
+                    if (response.success) {
+                        $("input[name='important']").prop('checked', false); // Clear radio button selection  
+                    } else {
+                        alert("Submission failed: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("Error connecting to the server.");
+                }
+            });
+        }
 
         //just shows the menu
         function ShowMenu() {
@@ -307,6 +340,11 @@
         $(document).ready(function () {
             $("#submitReplyButton").click(submitReply);
         });
+
+        // Attach event listener to submit button for importance
+        $(document).ready(function () {
+            $("#submitReplyButton").click(submitImportance);
+        });
         // Track the number of skips remaining
         var skipsRemaining = 3; // Example initial value
 
@@ -368,12 +406,16 @@
                             var comment =
                                 "<div id='comment" + i + "'>" +
                                 "<p>PRIORITY: " + priority + "</p>" +
+                               //"<p>IMPORTANCE: " + totalImportance + "</p>" +
                                 "<p>" + commentsArray[i].comment_firstname + " " +
                                 commentsArray[i].comment_lastname + ": " +
                                 commentsArray[i].comment_content + "</p>" +
+                                commentsArray[i].comment_lastname + ": " +
+                                commentsArray[i].comment_content + "</p>"
                                 "<p>" + commentsArray[i].reply_firstname + " " +
                                 commentsArray[i].reply_lastname + ": " +
                                 commentsArray[i].reply_content + "</p>" +
+
 
                                 "</div><hr>";
                             // Append the comment to the #commentPanel
@@ -450,6 +492,7 @@
                             var comment =
                                 "<div id='archcomment" + i + "'>" +
                                 "<p>PRIORITY: " + priority + "</p>" +
+                                //"<p>IMPORTANT: " + totalImportance + "</p>" +
                                 "<p>" + commentsArray[i].comment_firstname + " " +
                                 commentsArray[i].comment_lastname + ": " +
                                 commentsArray[i].comment_content + "</p>" +
@@ -912,14 +955,14 @@
 
             <hr />
 
-            <div id="rateComment" class="body">
-                <!-- The div where the user selects if a comment is important or not-->
-                <label>Do you think this topic is important?</label>
-                <input type="radio" id="yes" name="important" value="1">
-                <label for="yes">Yes</label>
-                <input type="radio" id="no" name="important" value="0">
-                <label for="no">No</label>
-            </div>
+           <div id="rateComment" class="body">
+    <!-- The div where the user selects if a comment is important or not-->
+    <label>Do you think this topic is important?</label>
+    <input type="radio" id="yes" name="important" value="1">
+    <label for="yes">Yes</label>
+    <input type="radio" id="no" name="important" value="0">
+    <label for="no">No</label>
+</div>
 
             <hr />
 

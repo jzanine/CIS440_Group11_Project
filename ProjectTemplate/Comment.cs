@@ -17,5 +17,6 @@ namespace ProjectTemplate
         public string reply_firstname;
         public string reply_lastname;
         public int priority;
+        public int totalImportance;
     }
 }
