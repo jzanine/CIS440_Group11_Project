@@ -35,29 +35,29 @@ namespace ProjectTemplate
 		{
 			return "SERVER=107.180.1.16; PORT=3306; DATABASE=" + dbname + "; UID=" + dbid + "; PASSWORD=" + dbpass;
 		}
-        ////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////
 
-        public class SkipsResponse
-        {
-            public bool Success { get; set; }
-            public string Message { get; set; }
-            public int SkipsLeft { get; set; }
-        }
-        [WebMethod(EnableSession = true)]
-        public string GetRandomComment()
-        {
-            string connectionString = getConString();
-            string query = "SELECT content FROM comments WHERE searchable = 1 ORDER BY RAND() LIMIT 1"; // MySQL syntax
+		public class SkipsResponse
+		{
+			public bool Success { get; set; }
+			public string Message { get; set; }
+			public int SkipsLeft { get; set; }
+		}
+		[WebMethod(EnableSession = true)]
+		public string GetRandomComment()
+		{
+			string connectionString = getConString();
+			string query = "SELECT content FROM comments WHERE searchable = 1 ORDER BY RAND() LIMIT 1"; // MySQL syntax
 
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                MySqlCommand command = new MySqlCommand(query, connection);
-                connection.Open();
+			using (MySqlConnection connection = new MySqlConnection(connectionString))
+			{
+				MySqlCommand command = new MySqlCommand(query, connection);
+				connection.Open();
 
-                object result = command.ExecuteScalar(); // Use ExecuteScalar for single values
-                return result != null ? result.ToString() : "No comments found.";
-            }
-        }
+				object result = command.ExecuteScalar(); // Use ExecuteScalar for single values
+				return result != null ? result.ToString() : "No comments found.";
+			}
+		}
 
 		[WebMethod(EnableSession = true)]
 		public int CountComments()
@@ -72,6 +72,13 @@ namespace ProjectTemplate
 				int totalRows = Convert.ToInt32(sqlCommand.ExecuteScalar());
 				return totalRows;
 			}
+		}
+
+		[WebMethod(EnableSession = true)]
+		public bool IsAdmin()
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1) return true;
+			else return false; 
 		}
 
 		[WebMethod(EnableSession = true)] //NOTICE: gotta enable session on each individual method
@@ -120,7 +127,6 @@ namespace ProjectTemplate
 			return success;
 		}
 
-
 		[WebMethod(EnableSession = true)]
 		public bool LogOff()
 		{
@@ -131,90 +137,90 @@ namespace ProjectTemplate
 			return true;
 		}
 
-        [WebMethod(EnableSession = true)]
-        public string SubmitSuggestion(string suggestion)
-        {
-            if (Session["accountID"] == null)
-            {
-                return "{ \"success\": false, \"message\": \"User must be logged in.\"}";
-            }
-            try
-            {
-                // Input Validation
-                if (string.IsNullOrEmpty(suggestion))
-                {
-                    return "{ \"success\": false, \"message\": \"Suggestion cannot be empty.\"}";
-                }
-                if (suggestion.Length > 500) // Example length limit
-                {
-                    return "{ \"success\": false, \"message\": \"Suggestion is too long.\"}";
-                }
+		[WebMethod(EnableSession = true)]
+		public string SubmitSuggestion(string suggestion)
+		{
+			if (Session["accountID"] == null)
+			{
+				return "{ \"success\": false, \"message\": \"User must be logged in.\"}";
+			}
+			try
+			{
+				// Input Validation
+				if (string.IsNullOrEmpty(suggestion))
+				{
+					return "{ \"success\": false, \"message\": \"Suggestion cannot be empty.\"}";
+				}
+				if (suggestion.Length > 500) // Example length limit
+				{
+					return "{ \"success\": false, \"message\": \"Suggestion is too long.\"}";
+				}
 
-                // Insert into database
-                using (MySqlConnection connection = new MySqlConnection(getConString()))
-                {
-                    connection.Open();
-                    string query = "INSERT INTO comments (accountID, content) VALUES (@accountID, @suggestion)";
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@accountID", Session["accountID"]);
-                        command.Parameters.AddWithValue("@suggestion", suggestion);
-                        command.ExecuteNonQuery();
-                    }
-                }
-                return "{ \"success\": true }"; // Consistent JSON response
-            }
-            catch (Exception e)
-            {
-                return "{ \"success\": false, \"message\": \"An unexpected error occurred. Please try again later.\" }";
-            }
-        }
+				// Insert into database
+				using (MySqlConnection connection = new MySqlConnection(getConString()))
+				{
+					connection.Open();
+					string query = "INSERT INTO comments (accountID, content) VALUES (@accountID, @suggestion)";
+					using (MySqlCommand command = new MySqlCommand(query, connection))
+					{
+						command.Parameters.AddWithValue("@accountID", Session["accountID"]);
+						command.Parameters.AddWithValue("@suggestion", suggestion);
+						command.ExecuteNonQuery();
+					}
+				}
+				return "{ \"success\": true }"; // Consistent JSON response
+			}
+			catch (Exception e)
+			{
+				return "{ \"success\": false, \"message\": \"An unexpected error occurred. Please try again later.\" }";
+			}
+		}
 
-        [WebMethod(EnableSession = true)]
-        public string SubmitReply(string commentContent, string replyContent)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(replyContent))
-                {
-                    return "{ \"success\": false, \"message\": \"Reply cannot be empty.\"}";
-                }
+		[WebMethod(EnableSession = true)]
+		public string SubmitReply(string commentContent, string replyContent)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(replyContent))
+				{
+					return "{ \"success\": false, \"message\": \"Reply cannot be empty.\"}";
+				}
 
-                string connectionString = getConString();
+				string connectionString = getConString();
 
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
-                {
-                    connection.Open();
+				using (MySqlConnection connection = new MySqlConnection(connectionString))
+				{
+					connection.Open();
 
-                    // Get the commentID based on the comment content
-                    string queryGetCommentID = "SELECT commentID FROM comments WHERE content = @commentContent LIMIT 1";
-                    int commentID = 0;
+					// Get the commentID based on the comment content
+					string queryGetCommentID = "SELECT commentID FROM comments WHERE content = @commentContent LIMIT 1";
+					int commentID = 0;
 
-                    using (MySqlCommand command = new MySqlCommand(queryGetCommentID, connection))
-                    {
-                        command.Parameters.AddWithValue("@commentContent", commentContent);
-                        object result = command.ExecuteScalar();
-                        if (result != null)
-                        {
-                            commentID = Convert.ToInt32(result);
-                        }
-                        else
-                        {
-                            return "{ \"success\": false, \"message\": \"Parent comment not found.\"}";
-                        }
-                    }
+					using (MySqlCommand command = new MySqlCommand(queryGetCommentID, connection))
+					{
+						command.Parameters.AddWithValue("@commentContent", commentContent);
+						object result = command.ExecuteScalar();
+						if (result != null)
+						{
+							commentID = Convert.ToInt32(result);
+						}
+						else
+						{
+							return "{ \"success\": false, \"message\": \"Parent comment not found.\"}";
+						}
+					}
 
-                    // Insert the reply anonymously
-                    string queryInsertReply = "INSERT INTO replies (commentID, accountID, content) VALUES (@commentID, @accountID, @replyContent)";
+					// Insert the reply anonymously
+					string queryInsertReply = "INSERT INTO replies (commentID, accountID, content) VALUES (@commentID, @accountID, @replyContent)";
 
-                    using (MySqlCommand command = new MySqlCommand(queryInsertReply, connection))
-                    {
-                        command.Parameters.AddWithValue("@commentID", commentID);
-                        command.Parameters.AddWithValue("@accountID", Session["accountID"]);
-                        command.Parameters.AddWithValue("@replyContent", replyContent);
-                        command.ExecuteNonQuery();
-                    }
-                }
+					using (MySqlCommand command = new MySqlCommand(queryInsertReply, connection))
+					{
+						command.Parameters.AddWithValue("@commentID", commentID);
+						command.Parameters.AddWithValue("@accountID", Session["accountID"]);
+						command.Parameters.AddWithValue("@replyContent", replyContent);
+						command.ExecuteNonQuery();
+					}
+				}
 
                 return "{ \"success\": true }";
             }
@@ -284,7 +290,7 @@ public string SubmitImportance(string commentContent, int important)
     }
 }
 
-        [WebMethod(EnableSession = true)]
+		[WebMethod(EnableSession = true)]
 		public Comment[] GetActiveComments()
 		{
 			//check out the return type.  It's an array of Comment objects.  You can look at our custom Comment class to see that it's 
@@ -677,14 +683,52 @@ public string SubmitImportance(string commentContent, int important)
 
 		[WebMethod(EnableSession = true)]
 		public void SetHighPriorityComment(string id)
-        {
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "UPDATE comments SET priority = 1 WHERE commentID=@idValue";
 
-        }
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+		}
 
 		[WebMethod(EnableSession = true)]
 		public void SetLowPriorityComment(string id)
-        {
+		{
+			if (Convert.ToInt32(Session["admin"]) == 1)
+			{
+				string sqlConnectString = getConString();
+				string sqlSelect = "UPDATE comments SET priority = 0 WHERE commentID=@idValue";
 
-        }
+				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+				sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
+
+				sqlConnection.Open();
+				try
+				{
+					sqlCommand.ExecuteNonQuery();
+				}
+				catch (Exception e)
+				{
+				}
+				sqlConnection.Close();
+			}
+		}
 	}
 }
