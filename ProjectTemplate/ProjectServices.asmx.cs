@@ -9,6 +9,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Web.Script.Services;
+using System.Xml.Linq;
 
 
 namespace ProjectTemplate
@@ -290,165 +291,170 @@ public string SubmitImportance(string commentContent, int important)
     }
 }
 
-		[WebMethod(EnableSession = true)]
-		public Comment[] GetActiveComments()
-		{
-			//check out the return type.  It's an array of Comment objects.  You can look at our custom Comment class to see that it's 
-			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-			//Keeps everything simple.
+        [WebMethod(EnableSession = true)]
+        public Comment[] GetActiveComments()
+        {
+            // Check out the return type. It's an array of Comment objects. You can look at our custom Comment class to see that it's 
+            // just a container for public class-level variables. It's a simple container that asp.net will have no trouble converting into json. When we return
+            // sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+            // Keeps everything simple.
 
-			//WE ONLY SHARE COMMENTS WITH LOGGED IN USERS AND ADMINS!
-			if (Session["accountID"] != null && Convert.ToInt32(Session["admin"]) == 1)
-			{
-				DataTable sqlDt = new DataTable("comments");
+            // WE ONLY SHARE COMMENTS WITH LOGGED IN USERS AND ADMINS!
+            if (Session["accountID"] != null && Convert.ToInt32(Session["admin"]) == 1)
+            {
+                DataTable sqlDt = new DataTable("comments");
 
-				string sqlConnectString = getConString();
-				string sqlSelect =
-					"SELECT " +
-						"c.commentID, " +
-						"c.content AS comment_content, " +
-						"a1.firstname AS comment_firstname, " +
-						"a1.lastname AS comment_lastname, " +
-						"r.replyID, " +
-						"r.content AS reply_content, " +
-						"a2.firstname AS reply_firstname, " +
-						"a2.lastname AS reply_lastname, " +
-						"priority " +
-					"FROM " +
-						"comments c " +
-					"JOIN " +
-					"	accounts a1 ON c.accountID = a1.accountID " +
-					"LEFT JOIN " +
-					"	replies r ON c.commentID = r.commentID " +
-					"LEFT JOIN " +
-					"	accounts a2 ON r.accountID = a2.accountID " +
-					"WHERE " +
-						"c.searchable = 1 " + // important part: distinquishes between active and archived
-					"ORDER BY " +
-						"priority DESC, " +
-						"c.commentID, " +
-						"r.replyID";
+                string sqlConnectString = getConString();
+                string sqlSelect =
+                    "SELECT " +
+                        "c.commentID, " +
+                        "c.content AS comment_content, " +
+                        "a1.firstname AS comment_firstname, " +
+                        "a1.lastname AS comment_lastname, " +
+                        "r.replyID, " +
+                        "r.content AS reply_content, " +
+                        "a2.firstname AS reply_firstname, " +
+                        "a2.lastname AS reply_lastname, " +
+                        "priority, " +
+                        "totalImportance " + // Ensure this line is not commented out
+                    "FROM " +
+                        "comments c " +
+                    "JOIN " +
+                        "accounts a1 ON c.accountID = a1.accountID " +
+                    "LEFT JOIN " +
+                        "replies r ON c.commentID = r.commentID " +
+                    "LEFT JOIN " +
+                        "accounts a2 ON r.accountID = a2.accountID " +
+                    "WHERE " +
+                        "c.searchable = 1 " + // Important part: distinguishes between active and archived
+                    "ORDER BY " +
+                        "priority DESC, " +
+                        "totalImportance DESC, " +
+                        "c.commentID, " +
+                        "r.replyID";
 
-				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+                MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+                MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				//gonna use this to fill a data table
-				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+                // Use this to fill a data table
+                MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
 
-				//filling the data table
-				sqlDa.Fill(sqlDt);
+                // Filling the data table
+                sqlDa.Fill(sqlDt);
 
-				//loop through each row in the datasets, creating instances
-				//of our container classes: Accounts, Comments, Replies.  Fill each with
-				//data from the rows, then dump them in a list.
-				List<Comment> comments = new List<Comment>();
-				for (int i = 0; i < sqlDt.Rows.Count; i++)
-				{
-					List<Reply> replies = new List<Reply>();
-					comments.Add(new Comment
-					{
-						commentID = sqlDt.Rows[i]["commentID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["commentID"]) : 0,
-						comment_content = sqlDt.Rows[i]["comment_content"] != DBNull.Value ? sqlDt.Rows[i]["comment_content"].ToString() : string.Empty,
-						comment_firstname = sqlDt.Rows[i]["comment_firstname"] != DBNull.Value ? sqlDt.Rows[i]["comment_firstname"].ToString() : string.Empty,
-						comment_lastname = sqlDt.Rows[i]["comment_lastname"] != DBNull.Value ? sqlDt.Rows[i]["comment_lastname"].ToString() : string.Empty,
-						replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
-						reply_content = sqlDt.Rows[i]["reply_content"] != DBNull.Value ? sqlDt.Rows[i]["reply_content"].ToString() : string.Empty,
-						reply_firstname = sqlDt.Rows[i]["reply_firstname"] != DBNull.Value ? sqlDt.Rows[i]["reply_firstname"].ToString() : string.Empty,
-						reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty,
-						priority = sqlDt.Rows[i]["priority"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["priority"]) : 0
-					});
-				}
-				//convert the list of comments to an array and return!
-				return comments.ToArray();
-			}
-			else
-			{
-				//if they're not logged in or not an admin, return an empty array
-				return new Comment[0];
-			}
-		}
+                // Loop through each row in the dataset, creating instances
+                // of our container classes: Accounts, Comments, Replies. Fill each with
+                // data from the rows, then dump them in a list.
+                List<Comment> comments = new List<Comment>();
+                for (int i = 0; i < sqlDt.Rows.Count; i++)
+                {
+                    List<Reply> replies = new List<Reply>();
+                    comments.Add(new Comment
+                    {
+                        commentID = sqlDt.Rows[i]["commentID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["commentID"]) : 0,
+                        comment_content = sqlDt.Rows[i]["comment_content"] != DBNull.Value ? sqlDt.Rows[i]["comment_content"].ToString() : string.Empty,
+                        comment_firstname = sqlDt.Rows[i]["comment_firstname"] != DBNull.Value ? sqlDt.Rows[i]["comment_firstname"].ToString() : string.Empty,
+                        comment_lastname = sqlDt.Rows[i]["comment_lastname"] != DBNull.Value ? sqlDt.Rows[i]["comment_lastname"].ToString() : string.Empty,
+                        replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
+                        reply_content = sqlDt.Rows[i]["reply_content"] != DBNull.Value ? sqlDt.Rows[i]["reply_content"].ToString() : string.Empty,
+                        reply_firstname = sqlDt.Rows[i]["reply_firstname"] != DBNull.Value ? sqlDt.Rows[i]["reply_firstname"].ToString() : string.Empty,
+                        reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty,
+                        priority = sqlDt.Rows[i]["priority"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["priority"]) : 0,
+                        totalImportance = sqlDt.Rows[i]["totalImportance"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["totalImportance"]) : 0
+                    });
+                }
+                // Convert the list of comments to an array and return!
+                return comments.ToArray();
+            }
+            else
+            {
+                // If they're not logged in or not an admin, return an empty array
+                return new Comment[0];
+            }
+        }
+        [WebMethod(EnableSession = true)]
+public Comment[] GetArchivedComments()
+{
+    // Check out the return type. It's an array of Comment objects. You can look at our custom Comment class to see that it's 
+    // just a container for public class-level variables. It's a simple container that asp.net will have no trouble converting into json. When we return
+    // sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
+    // Keeps everything simple.
 
-		[WebMethod(EnableSession = true)]
-		public Comment[] GetArchivedComments()
-		{
-			//check out the return type.  It's an array of Comment objects.  You can look at our custom Comment class to see that it's 
-			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-			//Keeps everything simple.
+    // WE ONLY SHARE COMMENTS WITH LOGGED IN USERS AND ADMINS!
+    if (Session["accountID"] != null && Convert.ToInt32(Session["admin"]) == 1)
+    {
+        DataTable sqlDt = new DataTable("comments");
 
-			//WE ONLY SHARE COMMENTS WITH LOGGED IN USERS AND ADMINS!
-			if (Session["accountID"] != null && Convert.ToInt32(Session["admin"]) == 1)
-			{
-				DataTable sqlDt = new DataTable("comments");
+        string sqlConnectString = getConString();
+        string sqlSelect =
+            "SELECT " +
+                "c.commentID, " +
+                "c.content AS comment_content, " +
+                "a1.firstname AS comment_firstname, " +
+                "a1.lastname AS comment_lastname, " +
+                "r.replyID, " +
+                "r.content AS reply_content, " +
+                "a2.firstname AS reply_firstname, " +
+                "a2.lastname AS reply_lastname, " +
+                "priority, " +
+                "totalImportance " + // Ensure this line is included
+            "FROM " +
+                "comments c " +
+            "JOIN " +
+                "accounts a1 ON c.accountID = a1.accountID " +
+            "LEFT JOIN " +
+                "replies r ON c.commentID = r.commentID " +
+            "LEFT JOIN " +
+                "accounts a2 ON r.accountID = a2.accountID " +
+            "WHERE " +
+                "c.searchable = 0 " + // Important part: distinguishes between active and archived
+            "ORDER BY " +
+                "priority DESC, " +
+                "totalImportance DESC, " +
+                "c.commentID, " +
+                "r.replyID";
 
-				string sqlConnectString = getConString();
-				string sqlSelect =
-					"SELECT " +
-						"c.commentID, " +
-						"c.content AS comment_content, " +
-						"a1.firstname AS comment_firstname, " +
-						"a1.lastname AS comment_lastname, " +
-						"r.replyID, " +
-						"r.content AS reply_content, " +
-						"a2.firstname AS reply_firstname, " +
-						"a2.lastname AS reply_lastname, " +
-						"priority " +
-					"FROM " +
-						"comments c " +
-					"JOIN " +
-					"	accounts a1 ON c.accountID = a1.accountID " +
-					"LEFT JOIN " +
-					"	replies r ON c.commentID = r.commentID " +
-					"LEFT JOIN " +
-					"	accounts a2 ON r.accountID = a2.accountID " +
-					"WHERE " +
-						"c.searchable = 0 " + // important part: distinquishes between active and archived
-					"ORDER BY " +
-						"priority DESC, " +
-						"c.commentID, " +
-						"r.replyID";
+        MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+        MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-				MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-				MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+        // Use this to fill a data table
+        MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
 
-				//gonna use this to fill a data table
-				MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+        // Filling the data table
+        sqlDa.Fill(sqlDt);
 
-				//filling the data table
-				sqlDa.Fill(sqlDt);
+        // Loop through each row in the dataset, creating instances
+        // of our container classes: Accounts, Comments, Replies. Fill each with
+        // data from the rows, then dump them in a list.
+        List<Comment> comments = new List<Comment>();
+        for (int i = 0; i < sqlDt.Rows.Count; i++)
+        {
+            List<Reply> replies = new List<Reply>();
+            comments.Add(new Comment
+            {
+                commentID = sqlDt.Rows[i]["commentID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["commentID"]) : 0,
+                comment_content = sqlDt.Rows[i]["comment_content"] != DBNull.Value ? sqlDt.Rows[i]["comment_content"].ToString() : string.Empty,
+                comment_firstname = sqlDt.Rows[i]["comment_firstname"] != DBNull.Value ? sqlDt.Rows[i]["comment_firstname"].ToString() : string.Empty,
+                comment_lastname = sqlDt.Rows[i]["comment_lastname"] != DBNull.Value ? sqlDt.Rows[i]["comment_lastname"].ToString() : string.Empty,
+                replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
+                reply_content = sqlDt.Rows[i]["reply_content"] != DBNull.Value ? sqlDt.Rows[i]["reply_content"].ToString() : string.Empty,
+                reply_firstname = sqlDt.Rows[i]["reply_firstname"] != DBNull.Value ? sqlDt.Rows[i]["reply_firstname"].ToString() : string.Empty,
+                reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty,
+                priority = sqlDt.Rows[i]["priority"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["priority"]) : 0,
+                totalImportance = sqlDt.Rows[i]["totalImportance"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["totalImportance"]) : 0 // Add this line
+            });
+        }
+        // Convert the list of comments to an array and return!
+        return comments.ToArray();
+    }
+    else
+    {
+        // If they're not logged in or not an admin, return an empty array
+        return new Comment[0];
+    }
+}
 
-				//loop through each row in the datasets, creating instances
-				//of our container classes: Accounts, Comments, Replies.  Fill each with
-				//data from the rows, then dump them in a list.
-				List<Comment> comments = new List<Comment>();
-				for (int i = 0; i < sqlDt.Rows.Count; i++)
-				{
-					List<Reply> replies = new List<Reply>();
-					comments.Add(new Comment
-					{
-						commentID = sqlDt.Rows[i]["commentID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["commentID"]) : 0,
-						comment_content = sqlDt.Rows[i]["comment_content"] != DBNull.Value ? sqlDt.Rows[i]["comment_content"].ToString() : string.Empty,
-						comment_firstname = sqlDt.Rows[i]["comment_firstname"] != DBNull.Value ? sqlDt.Rows[i]["comment_firstname"].ToString() : string.Empty,
-						comment_lastname = sqlDt.Rows[i]["comment_lastname"] != DBNull.Value ? sqlDt.Rows[i]["comment_lastname"].ToString() : string.Empty,
-						replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
-						reply_content = sqlDt.Rows[i]["reply_content"] != DBNull.Value ? sqlDt.Rows[i]["reply_content"].ToString() : string.Empty,
-						reply_firstname = sqlDt.Rows[i]["reply_firstname"] != DBNull.Value ? sqlDt.Rows[i]["reply_firstname"].ToString() : string.Empty,
-						reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty,
-						priority = sqlDt.Rows[i]["priority"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["priority"]) : 0
-					});
-				}
-				//convert the list of comments to an array and return!
-				return comments.ToArray();
-			}
-			else
-			{
-				//if they're not logged in or not an admin, return an empty array
-				return new Comment[0];
-			}
-		}
-
-		[WebMethod(EnableSession = true)]
+        [WebMethod(EnableSession = true)]
 		public void ArchiveComment(string id)
 		{
 			if (Convert.ToInt32(Session["admin"]) == 1)
@@ -543,7 +549,7 @@ public string SubmitImportance(string commentContent, int important)
 					"FROM " +
 						"accounts " +
 					"ORDER BY " +
-						"admin DESC, " +
+                        "admin DESC, " +
 						"lastname, " +
 						"firstname";
 
