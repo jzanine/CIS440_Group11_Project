@@ -93,6 +93,7 @@
                         showPanel('mainPanel');
                         ShowMenu();                 
                         skipsRemaining = 3; // Reset skips to 3
+                        $(".randomCommentButton").css("visibility", "visible");
 
                         // If the user is not an admin, call fetchImprovementBanner() to show the banner.
                         $.ajax({
@@ -406,6 +407,9 @@
 
                 if (userConfirmed) {
                     skipsRemaining--;
+                    if (skipsRemaining == 0) {
+                        $(".randomCommentButton").css("visibility", "hidden");
+                    }
                     loadRandomComment(); // Load a new comment only if the user confirms
                 } else {
                     // If user cancels, show the same comment again
