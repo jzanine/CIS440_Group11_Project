@@ -965,14 +965,46 @@
             });
         }
 
-
         // Function to navigate back to the home (main) panel
         function goHome() {
+            // Hide all content panels first
+            $(".contentPanel").css("visibility", "hidden");
+
+            // Clear data from all panels
             clearData();
-            showPanel('mainPanel'); // Display the main panel
+
+            // Show the main panel
+            $("#mainPanel").css("visibility", "visible");
+
+            // Restore the menu and admin controls
             ShowMenu();
-            fetchImprovementBanner();
+
+            // Recheck admin status and update banner/admin controls
+            $.ajax({
+                type: "POST",
+                url: "ProjectServices.asmx/IsAdmin",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.d) {
+                        // Admin: Show admin controls and hide the improvement banner
+                        $(".adminOnly").css("visibility", "visible");
+                        $("#improvementBanner").hide();
+                    } else {
+                        // Non-admin: Hide admin controls and show the improvement banner
+                        $(".adminOnly").css("visibility", "hidden");
+                        fetchImprovementBanner();
+                    }
+                },
+                error: function () {
+                    alert("Error checking admin status.");
+                }
+            });
+
+            // Clear suggestion input
+            $("#suggestionText").val("");
         }
+
 
         //this function executes once jQuery has successfully loaded and is
         //ready for business.  Usually, if we're wiring up event handlers via jQuery
