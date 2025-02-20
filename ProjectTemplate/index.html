@@ -965,11 +965,13 @@
             });
         }
 
-        // 🏠 Function to navigate back to the home (main) panel
+
+        // Function to navigate back to the home (main) panel
         function goHome() {
+            clearData();
             showPanel('mainPanel'); // Display the main panel
             ShowMenu();
-            //fetchImprovementBanner();
+            fetchImprovementBanner();
         }
 
         //this function executes once jQuery has successfully loaded and is
@@ -1090,7 +1092,7 @@
         <span class="title">Feedback!</span>
         <div id="menu" class="menu">
             <button class="button" onclick=LogOff()>Log Off</button>
-            <button class="button" onclick=goHome()">Home</button> <!-- 🏠 Home Button Added -->
+            <button class="button" onclick=goHome()">Home</button> <!-- Home Button Added -->
             <button class="button adminOnly" onclick=showActiveComments()>Show Active Comments</button>
             <button class="button adminOnly" onclick=showArchivedComments()>Show Archived Comments</button>
             <button class="button adminOnly" onclick=showUsers()>User List</button>
@@ -1145,7 +1147,7 @@
 
             <hr />
 
-            <!-- 🛠️ Admin Improvement Panel (Visible to Admins Only) -->
+            <!-- Admin Improvement Panel (Visible to Admins Only) -->
             <div id="adminPanel" class="adminOnly" style="margin-top: 20px; padding: 15px; border: 2px solid #002d62; background-color: #f0f0f0; border-radius: 10px;">
                 <h3>Admin Improvement Controls</h3>
                 <textarea id="improvementText" class="body" placeholder="Enter improvement message..." style="width: 100%; height: 80px; margin-bottom: 10px;"></textarea>
