@@ -29,6 +29,10 @@
                     $("#" + contentPanels[i]).css("visibility", "hidden");
                 }
             }
+            // Hide the improvement banner on the login page
+            if (panelId === 'logonPanel') {
+                $("#improvementBanner").hide();
+            }
         }
 
         function isAdmin() {
@@ -753,8 +757,20 @@
 
         // Fetch the banner on page load
         $(document).ready(function () {
-            fetchImprovementBanner();
+            // Call only if user is logged in
+            $.ajax({
+                type: "POST",
+                url: "ProjectServices.asmx/IsAdmin",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    if (!msg.d) {
+                        fetchImprovementBanner(); // Show banner for non-admin users after login
+                    }
+                }
+            });
         });
+
 
         // array to hold user account info
         var accountsArray;
@@ -967,42 +983,8 @@
 
         // Function to navigate back to the home (main) panel
         function goHome() {
-            // Hide all content panels first
-            $(".contentPanel").css("visibility", "hidden");
-
-            // Clear data from all panels
-            clearData();
-
-            // Show the main panel
-            $("#mainPanel").css("visibility", "visible");
-
-            // Restore the menu and admin controls
-            ShowMenu();
-
-            // Recheck admin status and update banner/admin controls
-            $.ajax({
-                type: "POST",
-                url: "ProjectServices.asmx/IsAdmin",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    if (msg.d) {
-                        // Admin: Show admin controls and hide the improvement banner
-                        $(".adminOnly").css("visibility", "visible");
-                        $("#improvementBanner").hide();
-                    } else {
-                        // Non-admin: Hide admin controls and show the improvement banner
-                        $(".adminOnly").css("visibility", "hidden");
-                        fetchImprovementBanner();
-                    }
-                },
-                error: function () {
-                    alert("Error checking admin status.");
-                }
-            });
-
-            // Clear suggestion input
-            $("#suggestionText").val("");
+            clearData(); // Optional: Clears forms and temporary data
+            showPanel('mainPanel'); 
         }
 
 
@@ -1124,7 +1106,7 @@
         <span class="title">Feedback!</span>
         <div id="menu" class="menu">
             <button class="button" onclick=LogOff()>Log Off</button>
-            <button class="button" onclick=goHome()">Home</button> <!-- Home Button Added -->
+            <button class="button" onclick=goHome()>Home</button> <!-- Home Button Added -->
             <button class="button adminOnly" onclick=showActiveComments()>Show Active Comments</button>
             <button class="button adminOnly" onclick=showArchivedComments()>Show Archived Comments</button>
             <button class="button adminOnly" onclick=showUsers()>User List</button>
