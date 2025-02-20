@@ -712,16 +712,18 @@
         function fetchImprovementBanner() {
             $.ajax({
                 type: "POST",
-                url: "ProjectServices.asmx/GetActiveImprovement",
+                url: "ProjectServices.asmx/GetActiveImprovements", // Correct method name
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
                     var improvementData = JSON.parse(response.d);
-                    if (improvementData.success && improvementData.content.trim() !== "") {
-                        $("#improvementMessage").text(improvementData.content);
-                        $("#improvementBanner").show(); // Show banner to logged-in user
+
+                    if (improvementData.success && improvementData.improvements.length > 0) {
+                        var improvementsText = improvementData.improvements.join(" | "); // Join multiple improvements
+                        $("#improvementMessage").text(improvementsText);
+                        $("#improvementBanner").show(); // Show banner
                     } else {
-                        $("#improvementBanner").hide(); // Hide if no active improvement
+                        $("#improvementBanner").hide(); // Hide if no improvements
                     }
                 },
                 error: function () {
@@ -961,7 +963,13 @@
                     alert("Error in delivering the message to the server or the server processing that message");
                 }
             });
+        }
 
+        // 🏠 Function to navigate back to the home (main) panel
+        function goHome() {
+            showPanel('mainPanel'); // Display the main panel
+            ShowMenu();
+            //fetchImprovementBanner();
         }
 
         //this function executes once jQuery has successfully loaded and is
@@ -972,6 +980,7 @@
             showPanel('logonPanel');
 
         });
+
 
     </script>
     <!--END OF YOUR OWN JAVASCRIPT-->
@@ -1081,6 +1090,7 @@
         <span class="title">Feedback!</span>
         <div id="menu" class="menu">
             <button class="button" onclick=LogOff()>Log Off</button>
+            <button class="button" onclick=goHome()">Home</button> <!-- 🏠 Home Button Added -->
             <button class="button adminOnly" onclick=showActiveComments()>Show Active Comments</button>
             <button class="button adminOnly" onclick=showArchivedComments()>Show Archived Comments</button>
             <button class="button adminOnly" onclick=showUsers()>User List</button>
