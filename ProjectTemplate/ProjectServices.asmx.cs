@@ -687,7 +687,106 @@ public Comment[] GetArchivedComments()
 			}
 		}
 
-		[WebMethod(EnableSession = true)]
+        //add improvements message
+        [WebMethod(EnableSession = true)]
+        public string AddImprovement(string content)
+        {
+            if (Session["accountID"] == null || Convert.ToInt32(Session["admin"]) != 1)
+            {
+                return "{ \"success\": false, \"message\": \"Only admins can add improvements.\" }";
+            }
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(getConString()))
+                {
+                    connection.Open();
+                    string query = "INSERT INTO improvements (content, isDisplayed) VALUES (@content, FALSE)";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@content", content);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                return "{ \"success\": true }";
+            }
+            catch (Exception e)
+            {
+                return "{ \"success\": false, \"message\": \"Database error occurred.\" }";
+            }
+        }
+
+        //toggle improvements display status
+        [WebMethod(EnableSession = true)]
+        public string ToggleImprovementDisplay(int improvementID, bool isDisplayed)
+        {
+            if (Session["accountID"] == null || Convert.ToInt32(Session["admin"]) != 1)
+            {
+                return "{ \"success\": false, \"message\": \"Only admins can update improvements.\" }";
+            }
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(getConString()))
+                {
+                    connection.Open();
+                    string query = "UPDATE improvements SET isDisplayed = @isDisplayed WHERE improvementID = @id";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", improvementID);
+                        command.Parameters.AddWithValue("@isDisplayed", isDisplayed);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                return "{ \"success\": true }";
+            }
+            catch (Exception e)
+            {
+                return "{ \"success\": false, \"message\": \"Error updating display status.\" }";
+            }
+        }
+
+        // Retrieve all active improvements
+        [WebMethod(EnableSession = true)]
+        public string GetActiveImprovements()
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(getConString()))
+                {
+                    connection.Open();
+                    string query = "SELECT content FROM improvements WHERE isDisplayed = TRUE";
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            List<string> improvements = new List<string>();
+                            while (reader.Read())
+                            {
+                                improvements.Add(reader["content"].ToString());
+                            }
+
+                            if (improvements.Count > 0)
+                            {
+                                var json = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(improvements);
+                                return "{ \"success\": true, \"improvements\": " + json + " }";
+                            }
+                            else
+                            {
+                                return "{ \"success\": false, \"improvements\": [] }";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return "{ \"success\": false, \"message\": \"Error retrieving improvements.\" }";
+            }
+        }
+
+
+        [WebMethod(EnableSession = true)]
 		public void SetHighPriorityComment(string id)
 		{
 			if (Convert.ToInt32(Session["admin"]) == 1)
