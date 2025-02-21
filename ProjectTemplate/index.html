@@ -766,7 +766,7 @@
             $.ajax({
                 type: "POST",
                 url: "ProjectServices.asmx/ToggleImprovementDisplay",
-                data: JSON.stringify({ improvementID: 1, isDisplayed: display }), // Replace with actual ID logic if needed
+                data: JSON.stringify({ improvementID: 1, isDisplayed: display }), 
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
@@ -778,22 +778,6 @@
                 }
             });
         }
-
-        // Fetch the banner on page load
-        $(document).ready(function () {
-            // Call only if user is logged in
-            $.ajax({
-                type: "POST",
-                url: "ProjectServices.asmx/IsAdmin",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    if (!msg.d) {
-                        fetchImprovementBanner(); // Show banner for non-admin users after login
-                    }
-                }
-            });
-        });
 
 
         // array to hold user account info
