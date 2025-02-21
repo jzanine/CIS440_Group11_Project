@@ -168,6 +168,14 @@
                 return;
             }
 
+            var importanceValue = $("input[name='important']:checked").val(); // Get the selected radio button value
+
+            if (!importanceValue) {
+                alert("Please select an importance value.");
+                return;
+            }
+
+
             var webMethod = "ProjectServices.asmx/SubmitReply";
             var parameters = JSON.stringify({ commentContent: parentComment, replyContent: replyContent });
 
@@ -198,7 +206,7 @@
             var parentComment = $("#randomCommentDisplay").text(); // Capture the parent comment content
 
             if (!importanceValue) {
-                alert("Please select an importance value.");
+                //alert("Please select an importance value.");
                 return;
             }
 
@@ -358,6 +366,10 @@
                 data: JSON.stringify({}), // No additional parameters needed
                 success: function (response) {
                     // Check if response contains a valid comment
+
+                    document.getElementById("replyText").value = "";
+                    $("input[name='important']").prop('checked', false); // Clear radio button selection 
+
                     console.log("Active comments: " + activeCommentCount); // for testing
                     console.log(skipTrackerArray); // for testing
                     console.log("Skips remaining: " + skipsRemaining); // for testing
@@ -986,7 +998,11 @@
 
         // Function to navigate back to the home (main) panel
         function goHome() {
-            clearData(); // Optional: Clears forms and temporary data
+            //clearData(); // Optional: Clears forms and temporary data
+            document.getElementById("suggestionText").value = "";
+            document.getElementById("improvementText").value = "";
+
+
             showPanel('mainPanel'); 
         }
 
@@ -995,7 +1011,6 @@
         //ready for business.  Usually, if we're wiring up event handlers via jQuery
         //then this is where they go.
         jQuery(function () {
-            //when the app loads, show the logon panel to start with!
             showPanel('logonPanel');
 
         });
