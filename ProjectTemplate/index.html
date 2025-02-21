@@ -203,10 +203,13 @@
         // Function to submit the importance value for a comment
         function submitImportance() {
             var importanceValue = $("input[name='important']:checked").val(); // Get the selected radio button value
-            var parentComment = $("#randomCommentDisplay").text(); // Capture the parent comment content
+            var parentComment = $("#randomCommentDisplay").text().trim(); // Capture the parent comment content
+
+            console.log("Selected importance value:", importanceValue); // Debugging log
+            console.log("Captured comment content:", parentComment); // Debugging log
 
             if (!importanceValue) {
-                //alert("Please select an importance value.");
+                alert("Please select an importance value.");
                 return;
             }
 
@@ -214,6 +217,8 @@
             var parameters = JSON.stringify({ commentContent: parentComment, important: parseInt(importanceValue) });
 
             console.log("Submitting importance:", parameters); // Log the parameters for debugging
+            console.log("Captured importance value before AJAX:", importanceValue);
+
 
             $.ajax({
                 type: "POST",
@@ -223,17 +228,21 @@
                 dataType: "json",
                 success: function (msg) {
                     var response = JSON.parse(msg.d);
+                    console.log("Server response:", response); // Debugging log
+
                     if (response.success) {
                         $("input[name='important']").prop('checked', false); // Clear radio button selection  
                     } else {
                         alert("Submission failed: " + response.message);
                     }
                 },
-                error: function () {
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error); // Log AJAX errors
                     alert("Error connecting to the server.");
                 }
             });
         }
+
 
         //just shows the menu
         function ShowMenu() {
