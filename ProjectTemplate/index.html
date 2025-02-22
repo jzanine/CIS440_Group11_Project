@@ -20,7 +20,6 @@
 
         //this function toggles which panel is showing
         function showPanel(panelId) {
-            // clearData();
             for (var i = 0; i < contentPanels.length; i++) {
                 if (panelId == contentPanels[i]) {
                     $("#" + contentPanels[i]).css("visibility", "visible");
@@ -62,32 +61,16 @@
             //the url of the webservice we will be talking to
             //CASE SENSITIVE!!
             var webMethod = "ProjectServices.asmx/LogOn";
-            //the parameters we will pass the service (in json format because curly braces)
-            //note we encode the values for transmission over the web.  All the \'s are just
-            //because we want to wrap our keynames and values in double quotes so we have to
-            //escape the double quotes (because the overall string we're creating is in double quotes!)
             var parameters = "{\"uid\":\"" + encodeURI(userId) + "\",\"pass\":\"" + encodeURI(pass) + "\"}";
 
             //jQuery ajax method
             $.ajax({
-                //post is more secure than get, and allows
-                //us to send big data if we want.  really just
-                //depends on the way the service you're talking to is set up, though
                 type: "POST",
-                //the url is set to the string we created above
                 url: webMethod,
-                //same with the data
                 data: parameters,
-                //these next two key/value pairs say we intend to talk in JSON format
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                //jQuery sends the data and asynchronously waits for a response.  when it
-                //gets a response, it calls the function mapped to the success key here
                 success: function (msg) {
-                    //the server response is in the msg object passed in to the function here
-                    //since our logon web method simply returns a true/false, that value is mapped
-                    //to a generic property of the server response called d (I assume short for data
-                    //but honestly I don't know...)
                     if (msg.d) {
                         //server replied true, so show the landing page: mainPanel
                         showPanel('mainPanel');
@@ -119,10 +102,6 @@
                     }
                 },
                 error: function (e) {
-                    //if something goes wrong in the mechanics of delivering the
-                    //message to the server or the server processing that message,
-                    //then this function mapped to the error key is executed rather
-                    //than the one mapped to the success key.
                     alert("Error in delivering the message to the server or the server processing that message");
                 }
             });
@@ -158,6 +137,7 @@
                 }
             });
         }
+
         // Function to submit a reply to a randomized comment
         function submitReply() {
             var replyContent = $("#replyText").val();
@@ -200,6 +180,7 @@
                 }
             });
         }
+
         // Function to submit the importance value for a comment
         function submitImportance() {
             var importanceValue = $("input[name='important']:checked").val(); // Get the selected radio button value
@@ -246,7 +227,6 @@
 
         //just shows the menu
         function ShowMenu() {
-            //$("#menu").css("visibility", "visible");
             isAdmin();
         }
 
@@ -280,7 +260,6 @@
             document.getElementById("randomCommentDisplay").innerHTML = "";
             skipTrackerArray = [];
             activeCommentCount = 0;
-            // skipsRemaining = 3;
         }
 
         //this function clears data from all panels
@@ -374,7 +353,6 @@
                 dataType: "json",
                 data: JSON.stringify({}), // No additional parameters needed
                 success: function (response) {
-                    // Check if response contains a valid comment
 
                     document.getElementById("replyText").value = "";
                     $("input[name='important']").prop('checked', false); // Clear radio button selection 
@@ -419,8 +397,6 @@
         $(document).ready(function () {
             $("#submitReplyButton").click(submitImportance);
         });
-        // Track the number of skips remaining
-        // var skipsRemaining = 3; // Example initial value
 
         // Function to handle the skip action
         function handleSkip() {
@@ -511,10 +487,8 @@
                                     commentsArray[c].reply_content + "</p>");
                             }
                             $("#comment" + i).append(
-                                // Delete and Archive button PLACEHOLDERS
                                 "<button onclick=archiveComment(" + commentsArray[i].commentID + ")>Archive</button>" +
                                 "<button onclick=deleteComment(" + commentsArray[i].commentID + ")>Delete</button>"
-                                //"<button >Toggle Priority</button>"
                             );
                             if (commentsArray[i].priority == 1) {
                                 $("#comment" + i).append(
@@ -596,10 +570,8 @@
                                     commentsArray[c].reply_content + "</p>");
                             }
                             $("#archcomment" + i).append(
-                                // Delete & Unarchive button PLACEHOLDERS
                                 "<button onclick=unArchiveComment(" + commentsArray[i].commentID + ")>Unarchive</button>" +
                                 "<button onclick=deleteComment(" + commentsArray[i].commentID + ")>Delete</button>"
-                                //"<button >Toggle Priority</button>"
                             );
                             if (commentsArray[i].priority == 1) {
                                 $("#archcomment" + i).append(
@@ -638,7 +610,7 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
-                        //we moved comment so refresh comments page we were viewing
+                        //we moved a comment so refresh page we were viewing
                         var vis = window.getComputedStyle(document.getElementById('archivedPanel')).visibility === 'visible';
                         if (vis) {
                             showArchivedComments();
@@ -655,7 +627,6 @@
         }
 
         function unArchiveComment(commentID) {
-            ;
             var answer = window.confirm("Unarchive comment?");
             if (answer) {
                 var webMethod = "ProjectServices.asmx/UnArchiveComment";
@@ -667,7 +638,7 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (msg) {
-                        //we moved comment so refresh comments page we were viewing
+                        //we moved a comment so refresh page we were viewing
                         var vis = window.getComputedStyle(document.getElementById('archivedPanel')).visibility === 'visible';
                         if (vis) {
                             showArchivedComments();
@@ -812,7 +783,7 @@
                                 "<p> Admin Status: " + isAdmin + "</p>" +
                                 "<p> Active Status: " + isActive + "</p>"
                             );
-                            //append buttons depending on admin and active status; toggles each and reorders list
+                            // append buttons depending on admin and active status; toggles each and reorders list
                             // Order: Admins > Active > Inactive
                             if (accountsArray[i].admin == 1) {
                                 $("#account" + i).append(
@@ -834,8 +805,6 @@
                                     "<button onclick=activateAccount(" + accountsArray[i].accountID + ")>Activate Account</button>"
                                 );
                             }
-
-
                         }
                         showPanel('accountPanel');
                     }
@@ -848,7 +817,6 @@
                 }
             });
         }
-
 
         function deactivateAccount(accountID) {
             var answer = window.confirm("Deactivate account?");
@@ -991,11 +959,8 @@
 
         // Function to navigate back to the home (main) panel
         function goHome() {
-            //clearData(); // Optional: Clears forms and temporary data
             document.getElementById("suggestionText").value = "";
             document.getElementById("improvementText").value = "";
-
-
             showPanel('mainPanel'); 
         }
 
@@ -1005,7 +970,6 @@
         //then this is where they go.
         jQuery(function () {
             showPanel('logonPanel');
-
         });
 
 
@@ -1303,7 +1267,7 @@
         add cards within contentContainer array (above in JavaScript section) as individual divs
         !! DON'T FORGET TO ADD DIV ID TO JAVASCRIPT ARRAY: contentPanels !!
         that method allows us to easly switch the interface from one to the other
-     -->
+        -->
         <div class="contentContainer">
 
             <div id="logonPanel" class="contentPanel logonPanel">
