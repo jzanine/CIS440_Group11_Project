@@ -1013,11 +1013,18 @@
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
     <style>
-        /*Colors for this project area as follows:
-            dark blue:#002d62
-            light blue:#3ab0ff
-            white:#f5f5f5
-            light green:#00c49a*/
+      
+        /* GENERAL STYLES */
+        :root {
+            --primary-color: #3ab0ff; /*light blue*/
+            --secondary-color: black;
+            --accent-color: #00c49a; /*light green*/
+            --background-color: #f5f5f5; /*white*/
+            --another-color:#ffb74d; /*orange*/
+            --text-color: black;
+            --border-radius: 8px;
+            --transition-speed: 0.3s;
+        }
 
         html {
             background: linear-gradient(to right, #00c49a, #3ab0ff);
@@ -1030,27 +1037,17 @@
             padding: 0;
         }
 
-
-        /* visibility hidden by default */
-        .menu {
-            visibility: hidden;
-            font-family: "Open Sans", serif;
-            font-optical-sizing: auto;
-            font-weight: 100;
-            font-style: normal;
-            background-color: black;
-            width: 100%;
-        }
-
-        /* visibility hidden by default */
-        .contentPanel {
-            visibility: hidden;
-            position: absolute;
-            background: linear-gradient(to right, #00c49a, #3ab0ff);
-            width: 100%;
-            height: 100%;
-        }
-
+        /* LAYOUT AND CONTAINER */
+        .container {
+             max-width: 800px;
+             margin: auto;
+             padding: 20px;
+             background: #f5f5f5;
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+             border-radius: var(--border-radius);
+          }
+      
+        /*TYPOGRAPHY*/
         .title {
             font-family: "Montserrat", serif;
             font-size: xx-large;
@@ -1059,47 +1056,152 @@
             color: #f5f5f5;
         }
 
-
-        .titleContainer {
-            background-color: black;
-            width: 100%;
-        }
-
         .header {
             font-family: "Montserrat", serif;
             font-size: x-large;
             font-weight: 500;
             font-style: normal;
             color: black;
-            background-color: #3ab0ff;
+            margin:5px;
+            
         }
-
 
         .body {
             font-family: "Open Sans", serif;
             font-size: large;
             font-weight: 500;
             font-style: normal;
-           
         }
 
+        .textarea {
+            background-color: #f5f5f5;
+        }
+
+ 
+
+        /*BUTTONS AND RADIO BUTTONS*/
         .button {
             font-family: "Open Sans", serif;
             font-size: medium;
             font-weight: 500;
             font-style: normal;
-            color: #f5f5f5;
+            color: var(--background-color);
             background-color: black;
             min-width: 150px;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            cursor: pointer;
+            transition: background var(--transition-speed);
+            margin:5px;
         }
 
-        .commentPanel {
+         .button:hover {
+            background-color: darkgray;
+            }
+
+        .adminButtons, .navButtons {
+            display: flex;
+            gap: 10px; /* Optional: space between buttons */
+        }
+
+
+
+       /*FORMS & INPUTS*/
+        #logonId, #logonPassword {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width:30%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+                border-color: var(--primary-color);
+                outline: none;
+                box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
+            }
+
+        /*PANELS AND VISIBILITY*/
+        .menu, .contentPanel {
+            visibility: hidden;
+            width: 100%;
+        }
+        .menu {
+            display: flex;
+            justify-content: space-between; /* Distributes space between the two groups */
+            align-items: center;
+            font-family: "Open Sans", serif;
+            font-optical-sizing: auto;
+            font-weight: 100;
+            font-style: normal;
+            margin-top: 7vh;
+            width: 100vw;
+            background-color: #3ab0ff;
+        }
+
+        .main {
+            margin-top: 10vh;
+        }
+
+        .contentPanel {
+            position: absolute;
+            background: linear-gradient(to right, #00c49a, #3ab0ff);
+            height: 100%;
+
+        }
+
+
+        .commentPanel, .archivedPanel {
             height: 100%;
         }
 
-        .archivedPanel {
-            height: 100%;
+        .logonBox {
+            display: flex;
+            justify-content: center; /* Centers horizontally */
+            width: 50vw;
+            height: 60vh;
+            color: black;
+            background-color: #f5f5f5;
         }
+
+        #logonForm {
+            width: 100%;
+            height: 100%;
+           
+        }
+
+        #logonPanel {
+            display: flex;
+            justify-content: center; /* Centers horizontally */
+         
+        }
+
+
+        .titleContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10vh;
+            background-color: black;
+            z-index: 1000;
+        }
+
 
         #randomCommentDisplay {
             background-color: #3ab0ff;
@@ -1108,122 +1210,186 @@
             font-weight: 600;
             font-style: normal;
         }
+        
+        #suggestionText {
+            width:100%;
+        }
+
+        #improvementBanner {
+            display: none;
+            background: #ffb74d;
+            padding: 15px;
+            font-family: "Open Sans", serif;
+            font-size: xx-large;
+            font-weight: 600;
+            font-style: italic;
+            height: 12vh;
+        }
+
+        #improvementText {
+            width: 100vw;
+        }
+
+        
+
+        .adminBanner {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #002d62;
+            background-color: #ffb74d;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .mainPanel {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top:5px;
+            height:30vh;
+        }
+
+        /* ALIGNMENT & SPACING */
+        .centered {
+            text-align: center;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+        }
     </style>
     <!--END OF YOUR OWN CSS-->
 </head>
 <body>
 
     <div class="titleContainer">
-        <span class="title">Feedback!</span>
-        <div id="menu" class="menu">
-            <button class="button" onclick=LogOff()>Log Off</button>
-            <button class="button" onclick=goHome()>Home</button> <!-- Home Button Added -->
+        <span class="title">Logo/Company Name Here</span>
+
+    </div>
+
+    <div id="menu" class="menu">
+        <div class="adminButtons">
             <button class="button adminOnly" onclick=showActiveComments()>Show Active Comments</button>
             <button class="button adminOnly" onclick=showArchivedComments()>Show Archived Comments</button>
             <button class="button adminOnly" onclick=showUsers()>User List</button>
-            <hr />
+        </div>
+
+        <div class="navButtons">
+            <button class="button navButton" onclick=LogOff()>Log Off</button>
+            <button class="button navButton" onclick=goHome()>Home</button>
         </div>
     </div>
 
-    <!-- Improvement Banner (Visible to All Users) -->
-    <div id="improvementBanner" style="display: none; background: yellow; padding: 10px;">
-        <p id="improvementMessage"></p>
-    </div>
+        <!-- Improvement Banner (Visible to All Users) -->
+        <div id="improvementBanner" class="centered">
+            <p id="improvementMessage"></p>
+        </div>
 
-    <!--
+        <!--
         we're using a stacked card approach for our main viewing area
         add cards within contentContainer array (above in JavaScript section) as individual divs
         !! DON'T FORGET TO ADD DIV ID TO JAVASCRIPT ARRAY: contentPanels !!
         that method allows us to easly switch the interface from one to the other
      -->
-    <div class="contentContainer">
+        <div class="contentContainer">
 
-        <div id="logonPanel" class="contentPanel logonPanel">
-            <div class="logonBox body">
-                <form onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
-                    <div class="left header">Log On</div>
-                    <hr />
-                    <div>
-                        ID: <input type="text" id="logonId" class="body" />
-                    </div>
-                    <div>
-                        Pwd: <input type="password" id="logonPassword" class="body" />
-                    </div>
-                    <hr />
-                    <div>
-                        <button class="button" type="submit">Go!</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            <div id="logonPanel" class="contentPanel logonPanel">
+                <div class="logonBox body">
+                    <form id="logonForm" onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
+                        <div class="left header">Sign In.</div>
+                        <div>
+                            <input type="text" id="logonId" class="body textarea" placeholder="Username" />
+                        </div>
+                        <div>
+                            <input type="password" id="logonPassword" class="body textarea" placeholder="Password" />
+                        </div>
 
-
-        <div id="mainPanel" class="contentPanel mainPanel">
-            <div class="left header">Main Feedback Section</div>
-            <!-- Suggestion Input Box -->
-            <textarea id="suggestionText" class="body" placeholder="Enter your suggestion here..."></textarea>
-
-            <!-- Submit Button -->
-            <button class="button" onclick="submitSuggestion()">Submit Suggestion</button>
-
-            <!-- Button that the user clicks to load a random comment -->
-            <button class="randomCommentButton button">Load Random Comment</button>
-            <!--</div>-->
-
-            <hr />
-
-            <!-- Admin Improvement Panel (Visible to Admins Only) -->
-            <div id="adminPanel" class="adminOnly" style="margin-top: 20px; padding: 15px; border: 2px solid #002d62; background-color: #f0f0f0; border-radius: 10px;">
-                <h3>Admin Improvement Controls</h3>
-                <textarea id="improvementText" class="body" placeholder="Enter improvement message..." style="width: 100%; height: 80px; margin-bottom: 10px;"></textarea>
-                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button class="button" onclick="submitImprovement()">Submit Improvement</button>
-                    <button class="button" onclick="toggleImprovement(true)">Display Improvement</button>
-                    <button class="button" onclick="toggleImprovement(false)">Hide Improvement</button>
+                        <div>
+                            <button class="button" type="submit">Go!</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
 
 
-        <div id="responsePanel" class="responsePanel contentPanel body">
-            <!-- The div where the random comment will be displayed -->
-            <div id="randomCommentDisplay"></div>
+            <div id="mainPanel" class="contentPanel mainPanel">
+                <div class="left header">What would you like to see improved?</div>
+                <!-- Suggestion Input Box -->
+                <textarea id="suggestionText" class="body textarea" placeholder="Enter your suggestion here..."></textarea>
 
-            <hr />
+                <!-- Submit Button -->
+                <button class="button" onclick="submitSuggestion()">Submit Suggestion</button>
 
-            <div id="rateComment" class="body">
-                <!-- The div where the user selects if a comment is important or not-->
-                <label>Do you think this topic is important?</label>
-                <input type="radio" id="yes" name="important" value="1">
-                <label for="yes">Yes</label>
-                <input type="radio" id="no" name="important" value="0">
-                <label for="no">No</label>
+                <!-- Button that the user clicks to load a random comment -->
+                <button class="randomCommentButton button">Load Random Comment</button>
+                <!--</div>-->
+
+              
+
+                <!-- Admin Improvement Panel (Visible to Admins Only) -->
+                <div id="adminPanel" class="adminOnly adminBanner">
+                    <div class="left header">What improvements have already been made?</div>
+                    <textarea id="improvementText" class="body" placeholder="Enter improvement message..." ></textarea>
+                        <button class="button" onclick="submitImprovement()">Submit Improvement</button>
+                        <button class="button" onclick="toggleImprovement(true)">Display Improvement</button>
+                        <button class="button" onclick="toggleImprovement(false)">Hide Improvement</button>
+                    </div>
+                </div>
             </div>
 
-            <hr />
 
-            <!-- Add button here to save comment and load next -->
-            <!-- Reply Input Box -->
-            <textarea id="replyText" placeholder="Enter your anonymous reply here..." class="body"></textarea>
+            <div id="responsePanel" class="responsePanel contentPanel body">
+                <!-- The div where the random comment will be displayed -->
+                <div id="randomCommentDisplay" class="left header"></div>
 
-            <!-- Submit Button -->
-            <button id="submitReplyButton" class="button">Submit Reply</button>
+                <hr />
 
-            <!-- Skip Button -->
-            <button id="skipButton" class="button">Skip</button>
+                <div id="rateComment" class="body">
+                    <!-- The div where the user selects if a comment is important or not-->
+                    <label>Do you think this topic is important?</label>
+                    <input type="radio" id="yes" name="important" value="1">
+                    <label for="yes">Yes</label>
+                    <input type="radio" id="no" name="important" value="0">
+                    <label for="no">No</label>
+                </div>
 
-        </div>
+                <hr />
 
-        <!-- Panel to display active comments and replies -->
-        <div id="commentPanel" class="contentPanel commentPanel body"></div>
+                <!-- Add button here to save comment and load next -->
+                <!-- Reply Input Box -->
+                <textarea id="replyText" placeholder="Enter your anonymous reply here..." class="body textarea"></textarea>
 
-        <!-- Panel to display archived comments and replies -->
-        <div id="archivedPanel" class="contentPanel archivedPanel body"></div>
+                <!-- Submit Button -->
+                <button id="submitReplyButton" class="button">Submit Reply</button>
 
-        <!-- Panel to display user account info -->
-        <div id="accountPanel" class="contentPanel accountPanel body"></div>
+                <!-- Skip Button -->
+                <button id="skipButton" class="button">Skip</button>
 
-    </div>
+            </div>
+
+            <!-- Panel to display active comments and replies -->
+            <div id="commentPanel" class="contentPanel commentPanel body"></div>
+
+            <!-- Panel to display archived comments and replies -->
+            <div id="archivedPanel" class="contentPanel archivedPanel body"></div>
+
+            <!-- Panel to display user account info -->
+            <div id="accountPanel" class="contentPanel accountPanel body"></div>
+
+        
 
 </body>
 </html>
