@@ -751,7 +751,7 @@ namespace ProjectTemplate
                 using (MySqlConnection connection = new MySqlConnection(getConString()))
                 {
                     connection.Open();
-                    string query = "SELECT content FROM improvements WHERE isDisplayed = TRUE";
+                    string query = "SELECT content FROM improvements WHERE isDisplayed = TRUE ORDER BY improvementID DESC LIMIT 1";
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
                         using (MySqlDataReader reader = command.ExecuteReader())
