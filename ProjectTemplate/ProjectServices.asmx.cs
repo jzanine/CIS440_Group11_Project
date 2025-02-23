@@ -777,7 +777,7 @@ namespace ProjectTemplate
                 using (MySqlConnection connection = new MySqlConnection(getConString()))
                 {
                     connection.Open();
-                    string query = "SELECT improvementID, content FROM improvements WHERE isDisplayed = 1 ORDER BY improvementID DESC LIMIT 1";
+                    string query = "SELECT content FROM improvements WHERE isDisplayed = 1 ORDER BY improvementID DESC LIMIT 1";
 
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
