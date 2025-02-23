@@ -707,7 +707,8 @@ namespace ProjectTemplate
                         if (count > 0)
                         {
                             //If it exists, update the existing row
-                            string updateQuery = "UPDATE improvements SET content = @content, isDisplayed = TRUE WHERE improvementID = (SELECT improvementID FROM (SELECT improvementID FROM improvements ORDER BY improvementID DESC LIMIT 1) AS subquery)";
+                            string updateQuery = "UPDATE improvements SET content = @content, isDisplayed = TRUE " +
+								"WHERE improvementID = (SELECT improvementID FROM (SELECT improvementID FROM improvements ORDER BY improvementID DESC LIMIT 1) AS subquery)";
                             using (MySqlCommand updateCmd = new MySqlCommand(updateQuery, connection))
                             {
                                 updateCmd.Parameters.AddWithValue("@content", content);
