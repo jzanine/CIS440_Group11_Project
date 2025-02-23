@@ -697,13 +697,36 @@ namespace ProjectTemplate
                 using (MySqlConnection connection = new MySqlConnection(getConString()))
                 {
                     connection.Open();
-                    string query = "INSERT INTO improvements (content, isDisplayed) VALUES (@content, FALSE)";
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+
+                    // Check if an improvement already exists
+                    string checkQuery = "SELECT COUNT(*) FROM improvements";
+                    using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@content", content);
-                        command.ExecuteNonQuery();
+                        int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                        if (count > 0)
+                        {
+                            //If it exists, update the existing row
+                            string updateQuery = "UPDATE improvements SET content = @content, isDisplayed = TRUE WHERE improvementID = (SELECT improvementID FROM (SELECT improvementID FROM improvements ORDER BY improvementID DESC LIMIT 1) AS subquery)";
+                            using (MySqlCommand updateCmd = new MySqlCommand(updateQuery, connection))
+                            {
+                                updateCmd.Parameters.AddWithValue("@content", content);
+                                updateCmd.ExecuteNonQuery();
+                            }
+                        }
+                        else
+                        {
+                            //If no row exists, insert a new one
+                            string insertQuery = "INSERT INTO improvements (content, isDisplayed) VALUES (@content, TRUE)";
+                            using (MySqlCommand insertCmd = new MySqlCommand(insertQuery, connection))
+                            {
+                                insertCmd.Parameters.AddWithValue("@content", content);
+                                insertCmd.ExecuteNonQuery();
+                            }
+                        }
                     }
                 }
+
                 return "{ \"success\": true }";
             }
             catch (Exception e)
@@ -711,6 +734,7 @@ namespace ProjectTemplate
                 return "{ \"success\": false, \"message\": \"Database error occurred.\" }";
             }
         }
+
 
         //toggle improvements display status
         [WebMethod(EnableSession = true)]
@@ -742,6 +766,7 @@ namespace ProjectTemplate
             }
         }
 
+
         // Retrieve all active improvements
         [WebMethod(EnableSession = true)]
         public string GetActiveImprovements()
@@ -751,31 +776,25 @@ namespace ProjectTemplate
                 using (MySqlConnection connection = new MySqlConnection(getConString()))
                 {
                     connection.Open();
-                    string query = "SELECT content FROM improvements WHERE isDisplayed = TRUE ORDER BY improvementID DESC LIMIT 1";
+                    string query = "SELECT content FROM improvements WHERE isDisplayed = 1 ORDER BY improvementID DESC LIMIT 1";
+
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
-                        using (MySqlDataReader reader = command.ExecuteReader())
-                        {
-                            List<string> improvements = new List<string>();
-                            while (reader.Read())
-                            {
-                                improvements.Add(reader["content"].ToString());
-                            }
+                        object result = command.ExecuteScalar();
 
-                            if (improvements.Count > 0)
-                            {
-                                var json = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(improvements);
-                                return "{ \"success\": true, \"improvements\": " + json + " }";
-                            }
-                            else
-                            {
-                                return "{ \"success\": false, \"improvements\": [] }";
-                            }
+                        if (result != null)
+                        {
+                            string improvement = result.ToString();
+                            return "{ \"success\": true, \"improvements\": [\"" + improvement + "\"] }";
+                        }
+                        else
+                        {
+                            return "{ \"success\": false, \"improvements\": [] }";
                         }
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return "{ \"success\": false, \"message\": \"Error retrieving improvements.\" }";
             }
