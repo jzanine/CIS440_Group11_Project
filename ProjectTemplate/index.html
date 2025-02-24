@@ -441,7 +441,6 @@
                         commentsArray = msg.d;
                         $("#commentPanel").empty();
 
-                        // Count replies with the same commentID (i.e. all replies to a single comment)
                         for (var i = 0; i < commentsArray.length; i++) {
                             var count = 0;
                             for (var j = i + 1; j < commentsArray.length; j++) {
@@ -460,48 +459,48 @@
 
                             var totalImportance = commentsArray[i].totalImportance;
 
-
-
-                            // Create the base comment HTML structure
+                            // Create the comment HTML structure with classes for priority, importance, and comment content
                             var comment =
                                 "<div id='comment" + i + "'>" +
-                                "<p>PRIORITY: " + priority + "</p>" +
-                                "<p>IMPORTANCE VOTES TOTAL: " + totalImportance + "</p>" +
-                                "<p>" + commentsArray[i].comment_firstname + " " +
+                                "<p class='bold'>PRIORITY: " + priority + "</p>" +
+                                "<p class='bold'>IMPORTANCE VOTES TOTAL: " + totalImportance + "</p>" +
+                                "<p class='header'>" + commentsArray[i].comment_firstname + " " +
                                 commentsArray[i].comment_lastname + ": " +
                                 commentsArray[i].comment_content + "</p>" +
                                 "<p>" + commentsArray[i].reply_firstname + " " +
                                 commentsArray[i].reply_lastname + ": " +
                                 commentsArray[i].reply_content + "</p>" +
-
                                 "</div><hr>";
+
                             // Append the comment to the #commentPanel
-                            // !! VERY IMPORTANT !! Must append <div> to DOM before you can append to it
                             $("#commentPanel").append(comment);
 
-                            // Append remaining replies associated with this comment
+                            // Append remaining replies
                             for (var c = i + 1; c <= count + i; c++) {
-                                // Append each reply to the associated comment div
                                 $("#comment" + i).append(
                                     "<p>" + commentsArray[c].reply_firstname + " " +
                                     commentsArray[c].reply_lastname + ": " +
                                     commentsArray[c].reply_content + "</p>");
                             }
+
+                            // Append buttons with the 'button' class
                             $("#comment" + i).append(
-                                "<button onclick=archiveComment(" + commentsArray[i].commentID + ")>Archive</button>" +
-                                "<button onclick=deleteComment(" + commentsArray[i].commentID + ")>Delete</button>"
+                                "<button class='button' onclick=archiveComment(" + commentsArray[i].commentID + ")>Archive</button>" +
+                                "<button class='button' onclick=deleteComment(" + commentsArray[i].commentID + ")>Delete</button>"
                             );
+
                             if (commentsArray[i].priority == 1) {
                                 $("#comment" + i).append(
-                                    "<button onclick=setLowPriorityComment(" + commentsArray[i].commentID + ")>Set LOW Priority</button>"
+                                    "<button class='button' onclick=setLowPriorityComment(" + commentsArray[i].commentID + ")>Set LOW Priority</button>"
                                 );
                             }
                             if (commentsArray[i].priority == 0) {
                                 $("#comment" + i).append(
-                                    "<button onclick=setHighPriorityComment(" + commentsArray[i].commentID + ")>Set HIGH Priority</button>"
+                                    "<button class='button' onclick=setHighPriorityComment(" + commentsArray[i].commentID + ")>Set HIGH Priority</button>"
                                 );
                             }
-                            // Skip number of replies to avoid repeating them (i.e. we already added them above)
+
+                            // Skip number of replies
                             i = i + count;
                         }
                         showPanel('commentPanel');
@@ -528,7 +527,6 @@
                         commentsArray = msg.d;
                         $("#archivedPanel").empty();
 
-                        // Count replies with the same commentID (i.e. all replies to a single comment)
                         for (var i = 0; i < commentsArray.length; i++) {
                             var count = 0;
                             for (var j = i + 1; j < commentsArray.length; j++) {
@@ -536,6 +534,7 @@
                                     count++;
                                 }
                             }
+
                             var priority;
                             if (commentsArray[i].priority == 0) {
                                 priority = "LOW"
@@ -545,46 +544,48 @@
                             }
                             var totalImportance = commentsArray[i].totalImportance;
 
-                            // Create the comment HTML structure
+                            // Create the comment HTML structure with classes for priority, importance, and comment content
                             var comment =
                                 "<div id='archcomment" + i + "'>" +
-                                "<p>PRIORITY: " + priority + "</p>" +
-                                "<p>IMPORTANCE VOTES TOTAL: " + totalImportance + "</p>" +
-                                "<p>" + commentsArray[i].comment_firstname + " " +
+                                "<p class='bold'>PRIORITY: " + priority + "</p>" +
+                                "<p class='bold'>IMPORTANCE VOTES TOTAL: " + totalImportance + "</p>" +
+                                "<p class='header'>" + commentsArray[i].comment_firstname + " " +
                                 commentsArray[i].comment_lastname + ": " +
                                 commentsArray[i].comment_content + "</p>" +
                                 "<p>" + commentsArray[i].reply_firstname + " " +
                                 commentsArray[i].reply_lastname + ": " +
                                 commentsArray[i].reply_content + "</p>" +
-
                                 "</div><hr>";
+
                             // Append the comment to the #archivedPanel
-                            // !! VERY IMPORTANT !! Must append <div> to DOM before you can append to it
                             $("#archivedPanel").append(comment);
 
-                            // Append remaining replies associated with this comment
+                            // Append remaining replies
                             for (var c = i + 1; c <= count + i; c++) {
-                                // Append each reply to the associated comment div
                                 $("#archcomment" + i).append(
                                     "<p>" + commentsArray[c].reply_firstname + " " +
                                     commentsArray[c].reply_lastname + ": " +
                                     commentsArray[c].reply_content + "</p>");
                             }
+
+                            // Append buttons with the 'button' class
                             $("#archcomment" + i).append(
-                                "<button onclick=unArchiveComment(" + commentsArray[i].commentID + ")>Unarchive</button>" +
-                                "<button onclick=deleteComment(" + commentsArray[i].commentID + ")>Delete</button>"
+                                "<button class='button' onclick=unArchiveComment(" + commentsArray[i].commentID + ")>Unarchive</button>" +
+                                "<button class='button' onclick=deleteComment(" + commentsArray[i].commentID + ")>Delete</button>"
                             );
+
                             if (commentsArray[i].priority == 1) {
                                 $("#archcomment" + i).append(
-                                    "<button onclick=setLowPriorityComment(" + commentsArray[i].commentID + ")>Set LOW Priority</button>"
+                                    "<button class='button' onclick=setLowPriorityComment(" + commentsArray[i].commentID + ")>Set LOW Priority</button>"
                                 );
                             }
                             if (commentsArray[i].priority == 0) {
                                 $("#archcomment" + i).append(
-                                    "<button onclick=setHighPriorityComment(" + commentsArray[i].commentID + ")>Set HIGH Priority</button>"
+                                    "<button class='button' onclick=setHighPriorityComment(" + commentsArray[i].commentID + ")>Set HIGH Priority</button>"
                                 );
                             }
-                            // Skip number of replies to avoid repeating them (i.e. we already added them above)
+
+                            // Skip number of replies
                             i = i + count;
                         }
                         showPanel('archivedPanel');
@@ -598,6 +599,7 @@
                 }
             });
         }
+
 
         function archiveComment(commentID) {
             var answer = window.confirm("Archive comment?");
@@ -756,7 +758,6 @@
         }
 
 
-        // array to hold user account info
         var accountsArray;
 
         function showUsers() {
@@ -773,14 +774,14 @@
 
                         for (var i = 0; i < accountsArray.length; i++) {
 
-                            // Create the account HTML structure
+                            // Create the account HTML structure with class 'header' for names
                             var account =
                                 "<div id='account" + i + "'>" +
-                                "<p>" + accountsArray[i].firstname + " " +
-                                accountsArray[i].lastname + "</p>" +
+                                "<p class='header'>" + accountsArray[i].firstname + " " + accountsArray[i].lastname + "</p>" +
                                 "</div><hr>";
                             // Append the account to the #accountPanel
                             $("#accountPanel").append(account);
+
                             // Append ADMIN and ACTIVE status
                             var isAdmin = accountsArray[i].admin == 1 ? "Admin" : "Not Admin";
                             var isActive = accountsArray[i].active == 1 ? "Active" : "Inactive";
@@ -788,26 +789,26 @@
                                 "<p> Admin Status: " + isAdmin + "</p>" +
                                 "<p> Active Status: " + isActive + "</p>"
                             );
-                            // append buttons depending on admin and active status; toggles each and reorders list
-                            // Order: Admins > Active > Inactive
+
+                            // Append buttons with 'button' class depending on admin and active status
                             if (accountsArray[i].admin == 1) {
                                 $("#account" + i).append(
-                                    "<button onclick=demoteAdmin(" + accountsArray[i].accountID + ")>Demote Admin</button>"
+                                    "<button class='button' onclick=demoteAdmin(" + accountsArray[i].accountID + ")>Demote Admin</button>"
                                 );
                             }
                             if (accountsArray[i].admin == 0) {
                                 $("#account" + i).append(
-                                    "<button onclick=promoteAdmin(" + accountsArray[i].accountID + ")>Promote Admin</button>"
+                                    "<button class='button' onclick=promoteAdmin(" + accountsArray[i].accountID + ")>Promote Admin</button>"
                                 );
                             }
                             if (accountsArray[i].active == 1) {
                                 $("#account" + i).append(
-                                    "<button onclick=deactivateAccount(" + accountsArray[i].accountID + ")>Deactivate Account</button>"
+                                    "<button class='button' onclick=deactivateAccount(" + accountsArray[i].accountID + ")>Deactivate Account</button>"
                                 );
                             }
                             if (accountsArray[i].active == 0) {
                                 $("#account" + i).append(
-                                    "<button onclick=activateAccount(" + accountsArray[i].accountID + ")>Activate Account</button>"
+                                    "<button class='button' onclick=activateAccount(" + accountsArray[i].accountID + ")>Activate Account</button>"
                                 );
                             }
                         }
@@ -822,6 +823,7 @@
                 }
             });
         }
+
 
         function deactivateAccount(accountID) {
             var answer = window.confirm("Deactivate account?");
@@ -1327,7 +1329,9 @@
 <body>
 
     <div class="titleContainer">
-       
+        <img id="logoText" src="images/Logo-Text.jpg" alt="Logo Text">
+        <img id="logoImage" src="images/Logo Image.jpg" alt="Logo Image">
+
 
     </div>
 

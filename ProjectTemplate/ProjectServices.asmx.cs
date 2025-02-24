@@ -431,7 +431,7 @@ namespace ProjectTemplate
 					comments.Add(new Comment
 					{
 						commentID = sqlDt.Rows[i]["commentID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["commentID"]) : 0,
-                        comment_content = $"<span class='header'>{(sqlDt.Rows[i]["comment_content"] != DBNull.Value ? sqlDt.Rows[i]["comment_content"].ToString() : string.Empty)}</span>",
+                        comment_content = sqlDt.Rows[i]["comment_content"] != DBNull.Value ? sqlDt.Rows[i]["comment_content"].ToString() : string.Empty,
                         comment_firstname = sqlDt.Rows[i]["comment_firstname"] != DBNull.Value ? sqlDt.Rows[i]["comment_firstname"].ToString() : string.Empty,
 						comment_lastname = sqlDt.Rows[i]["comment_lastname"] != DBNull.Value ? sqlDt.Rows[i]["comment_lastname"].ToString() : string.Empty,
 						replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
