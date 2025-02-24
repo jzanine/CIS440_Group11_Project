@@ -3,6 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
@@ -1001,8 +1002,7 @@
         html, body {
             height: 100%;
             width: 100%;
-            overflow-x:hidden;
-            
+            overflow-x: hidden;
         }
 
         * {
@@ -1042,6 +1042,12 @@
             padding: 10px;
         }
 
+        .bold {
+            font-family: "Open Sans", serif;
+            font-size: large;
+            font-weight: 700;
+            font-style: normal;
+        }
 
         .body {
             font-family: "Open Sans", serif;
@@ -1052,10 +1058,10 @@
 
         .textarea {
             background-color: #f5f5f5;
-            width:90%;
+            width: 90%;
         }
 
-    
+
 
 
         /*BUTTONS AND RADIO BUTTONS*/
@@ -1084,8 +1090,7 @@
             gap: 12px; /* space between buttons */
         }
 
-      
-
+    
         /*FORMS & INPUTS*/
         #logonId, #logonPassword {
             margin-top: 15px;
@@ -1118,7 +1123,7 @@
 
         /*PANELS AND VISIBILITY*/
 
-      
+
 
         .menu, .contentPanel {
             visibility: hidden;
@@ -1165,6 +1170,7 @@
             display: flex;
             justify-content: center; /* Centers horizontally */
             width: 50vw;
+            min-width:520px;
             height: 40vh;
             color: black;
             background-color: #f5f5f5;
@@ -1174,9 +1180,9 @@
 
         #logonForm {
             width: 100%;
-            min-width:500px;
+            min-width: 500px;
             height: 100%;
-            min-height:400px;
+            min-height: 400px;
         }
 
         #logonPanel {
@@ -1211,11 +1217,12 @@
             border-radius: var(--border-radius);
         }
 
-        #suggestionText, #replyText {
+        #suggestionText {
             width: 90%;
             height: 20vh;
             background-color: #f5f5f5;
         }
+
 
         #improvementBanner {
             display: none;
@@ -1228,23 +1235,26 @@
             height: 12vh;
         }
 
-        #improvementText {
+        #improvementText, #replyText {
             width: 100vw;
         }
 
-
-
         .adminBanner {
+            background-color: #ffb74d;
+            margin-top:20px;
+        }
+
+
+        .adminBanner, #rateComment {
             margin-top: 20px;
             padding: 15px;
             border: 2px solid #002d62;
-            background-color: #ffb74d;
             border-radius: 10px;
             display: flex;
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
-            width:90vw;
+            width: 90vw;
         }
 
         .mainPanel, #responsePanel {
@@ -1254,28 +1264,34 @@
             flex-wrap: wrap;
             margin-top: 5px;
             height: 30vh;
+            width:100%;
         }
 
 
         #rateComment {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
             background-color: #3ab0ff;
-            box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
-            border-radius: var(--border-radius);
-            padding-bottom: 10px;
+            align-items: center;
         }
-        
+
         .radio-group {
-            display: flex;
-            align-items: flex-start;
             margin-top: 5px;
-            width: 90%;
+            display: flex;
+            gap: 15px; 
+            align-items: center; 
         }
 
+            .radio-group input[type="radio"] {
+                display: inline-block; 
+                margin-right: 8px; 
+            }
 
-       
+            .radio-group label {
+                display: inline-block; 
+                font-weight: normal; 
+                white-space: nowrap;
+                font-size:large;
+            }
+
 
         /* ALIGNMENT & SPACING */
         .centered {
@@ -1311,6 +1327,7 @@
 <body>
 
     <div class="titleContainer">
+       
 
     </div>
 
@@ -1389,7 +1406,7 @@
             <!-- The div where the random comment will be displayed -->
             <div id="randomCommentDisplay"></div>
 
-            
+
 
             <div id="rateComment">
                 <!-- The div where the user selects if a comment is important or not-->
@@ -1400,19 +1417,18 @@
                     <input type="radio" id="no" name="important" value="0">
                     <label for="no">No, I don't believe this issue needs to be addressed.</label>
                 </div>
+                <!-- Reply Input Box -->
+                <textarea id="replyText" placeholder="Enter your reasoning here." class="body textarea"></textarea>
+
             </div>
-
-           
-
-           
-            <!-- Reply Input Box -->
-            <textarea id="replyText" placeholder="Enter your reasoning here." class="body textarea"></textarea>
-
             <!-- Submit Button -->
             <button id="submitReplyButton" class="button">Submit Reply</button>
 
             <!-- Skip Button -->
             <button id="skipButton" class="button">Skip Comment</button>
+
+
+
 
         </div>
 
