@@ -1192,7 +1192,6 @@
             justify-content: center; /* Centers horizontally */
         }
 
-
         .titleContainer {
             position: fixed;
             top: 0;
@@ -1201,6 +1200,11 @@
             height: 10vh;
             background-color: black;
             z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px; /* Optional: Adds some space on left and right */
+            box-sizing: border-box; /* Prevents padding from causing overflow */
         }
 
 
@@ -1294,6 +1298,9 @@
                 font-size:large;
             }
 
+            .logo{
+             height:60px;
+            }
 
         /* ALIGNMENT & SPACING */
         .centered {
@@ -1329,8 +1336,8 @@
 <body>
 
     <div class="titleContainer">
-        <img id="logoText" src="images/Logo-Text.jpg" alt="Logo Text">
-        <img id="logoImage" src="images/Logo Image.jpg" alt="Logo Image">
+        <img class="logo" id="logoText" src="images/Logo-Text.jpg" alt="Logo Text">
+        <img class="logo" id="logoImage"src="images/Logo-Image.jpg" alt="Logo Image">
 
 
     </div>
