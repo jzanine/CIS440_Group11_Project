@@ -348,16 +348,16 @@ namespace ProjectTemplate
                     List<Reply> replies = new List<Reply>();
                     comments.Add(new Comment
                     {
-                        commentID = sqlDt.Rows[i]["commentID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["commentID"]) : 0,
-                        comment_content = sqlDt.Rows[i]["comment_content"] != DBNull.Value ? sqlDt.Rows[i]["comment_content"].ToString() : string.Empty,
-                        comment_firstname = sqlDt.Rows[i]["comment_firstname"] != DBNull.Value ? sqlDt.Rows[i]["comment_firstname"].ToString() : string.Empty,
-                        comment_lastname = sqlDt.Rows[i]["comment_lastname"] != DBNull.Value ? sqlDt.Rows[i]["comment_lastname"].ToString() : string.Empty,
-                        replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
-                        reply_content = sqlDt.Rows[i]["reply_content"] != DBNull.Value ? sqlDt.Rows[i]["reply_content"].ToString() : string.Empty,
-                        reply_firstname = sqlDt.Rows[i]["reply_firstname"] != DBNull.Value ? sqlDt.Rows[i]["reply_firstname"].ToString() : string.Empty,
-                        reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty,
-                        priority = sqlDt.Rows[i]["priority"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["priority"]) : 0,
-                        totalImportance = sqlDt.Rows[i]["totalImportance"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["totalImportance"]) : 0
+						commentID = sqlDt.Rows[i]["commentID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["commentID"]) : 0,
+						comment_content = sqlDt.Rows[i]["comment_content"] != DBNull.Value ? sqlDt.Rows[i]["comment_content"].ToString() : string.Empty,
+						comment_firstname = sqlDt.Rows[i]["comment_firstname"] != DBNull.Value ? sqlDt.Rows[i]["comment_firstname"].ToString() : string.Empty,
+						comment_lastname = sqlDt.Rows[i]["comment_lastname"] != DBNull.Value ? sqlDt.Rows[i]["comment_lastname"].ToString() : string.Empty,
+						replyID = sqlDt.Rows[i]["replyID"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["replyID"]) : 0,
+						reply_content = sqlDt.Rows[i]["reply_content"] != DBNull.Value ? sqlDt.Rows[i]["reply_content"].ToString() : string.Empty,
+						reply_firstname = sqlDt.Rows[i]["reply_firstname"] != DBNull.Value ? sqlDt.Rows[i]["reply_firstname"].ToString() : string.Empty,
+						reply_lastname = sqlDt.Rows[i]["reply_lastname"] != DBNull.Value ? sqlDt.Rows[i]["reply_lastname"].ToString() : string.Empty,
+						priority = sqlDt.Rows[i]["priority"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["priority"]) : 0,
+						totalImportance = sqlDt.Rows[i]["totalImportance"] != DBNull.Value ? Convert.ToInt32(sqlDt.Rows[i]["totalImportance"]) : 0
                     });
                 }
                 // Convert the list of comments to an array and return!
