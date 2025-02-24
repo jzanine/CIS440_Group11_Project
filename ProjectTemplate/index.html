@@ -1048,6 +1048,7 @@
 
         .textarea {
             background-color: #f5f5f5;
+            width:90%;
         }
 
     
@@ -1079,11 +1080,7 @@
             gap: 12px; /* space between buttons */
         }
 
-        .radio{
-            width:20px;
-        }
-
-
+      
 
         /*FORMS & INPUTS*/
         #logonId, #logonPassword {
@@ -1173,7 +1170,9 @@
 
         #logonForm {
             width: 100%;
+            min-width:500px;
             height: 100%;
+            min-height:400px;
         }
 
         #logonPanel {
@@ -1199,14 +1198,16 @@
             font-family: "Open Sans", serif;
             font-size: xx-large;
             font-weight: 800;
-            font-style: normal;
+            font-style: italic;
             width: 80vw;
             height: 8vh;
             margin-top: 10px;
             text-align: center;
+            box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
+            border-radius: var(--border-radius);
         }
 
-        #suggestionText {
+        #suggestionText, #replyText {
             width: 90%;
             height: 20vh;
             background-color: #f5f5f5;
@@ -1251,26 +1252,26 @@
             height: 30vh;
         }
 
-        #replyText {
-            width: 100vw;
-        }
 
         #rateComment {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            background-color: #3ab0ff;
+            box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
+            border-radius: var(--border-radius);
+            padding-bottom: 10px;
         }
-
+        
         .radio-group {
             display: flex;
             align-items: flex-start;
             margin-top: 5px;
-            width: 50%;
+            width: 90%;
         }
 
-        .radio-group input[type="radio"] {
-            margin-right: 5px;
-            }
+
+       
 
         /* ALIGNMENT & SPACING */
         .centered {
@@ -1388,7 +1389,7 @@
 
             <div id="rateComment">
                 <!-- The div where the user selects if a comment is important or not-->
-                <label>Do you think this topic is important?</label>
+                <label class="header">Do you think this topic is important?</label>
                 <div class="radio-group">
                     <input type="radio" id="yes" name="important" value="1">
                     <label for="yes">Yes, it is something that needs to be addressed.</label>
