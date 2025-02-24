@@ -74,7 +74,7 @@
                     if (msg.d) {
                         //server replied true, so show the landing page: mainPanel
                         showPanel('mainPanel');
-                        ShowMenu();                 
+                        ShowMenu();
                         skipsRemaining = 3; // Reset skips to 3
                         $(".randomCommentButton").css("visibility", "visible");
 
@@ -212,7 +212,7 @@
                     console.log("Server response:", response); // Debugging log
 
                     if (response.success) {
-                        $("input[name='important']").prop('checked', false); // Clear radio button selection  
+                        $("input[name='important']").prop('checked', false); // Clear radio button selection
                     } else {
                         alert("Submission failed: " + response.message);
                     }
@@ -355,7 +355,7 @@
                 success: function (response) {
 
                     document.getElementById("replyText").value = "";
-                    $("input[name='important']").prop('checked', false); // Clear radio button selection 
+                    $("input[name='important']").prop('checked', false); // Clear radio button selection
 
                     console.log("Active comments: " + activeCommentCount); // for testing
                     console.log(skipTrackerArray); // for testing
@@ -465,7 +465,7 @@
                             var comment =
                                 "<div id='comment" + i + "'>" +
                                 "<p>PRIORITY: " + priority + "</p>" +
-                               "<p>IMPORTANCE VOTES TOTAL: " + totalImportance + "</p>" +
+                                "<p>IMPORTANCE VOTES TOTAL: " + totalImportance + "</p>" +
                                 "<p>" + commentsArray[i].comment_firstname + " " +
                                 commentsArray[i].comment_lastname + ": " +
                                 commentsArray[i].comment_content + "</p>" +
@@ -737,7 +737,7 @@
             $.ajax({
                 type: "POST",
                 url: "ProjectServices.asmx/ToggleImprovementDisplay",
-                data: JSON.stringify({ improvementID: 1, isDisplayed: display }), 
+                data: JSON.stringify({ improvementID: 1, isDisplayed: display }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
@@ -961,7 +961,7 @@
         function goHome() {
             document.getElementById("suggestionText").value = "";
             document.getElementById("improvementText").value = "";
-            showPanel('mainPanel'); 
+            showPanel('mainPanel');
         }
 
 
@@ -977,14 +977,14 @@
     <!--END OF YOUR OWN JAVASCRIPT-->
     <!--AND YOUR OWN CSS CAN GO HERE AS WELL-->
     <style>
-      
+
         /* GENERAL STYLES */
         :root {
             --primary-color: #3ab0ff; /*light blue*/
             --secondary-color: black;
             --accent-color: #00c49a; /*light green*/
             --background-color: #f5f5f5; /*white*/
-            --another-color:#ffb74d; /*orange*/
+            --another-color: #ffb74d; /*orange*/
             --text-color: black;
             --border-radius: 8px;
             --transition-speed: 0.3s;
@@ -992,9 +992,14 @@
 
         html {
             background: linear-gradient(to right, #00c49a, #3ab0ff);
-            height:100%;
         }
-        
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x:hidden;
+            
+        }
 
         * {
             margin: 0;
@@ -1003,14 +1008,17 @@
 
         /* LAYOUT AND CONTAINER */
         .container {
-             max-width: 800px;
-             margin: auto;
-             padding: 20px;
-             background: #f5f5f5;
-             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-             border-radius: var(--border-radius);
-          }
-      
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: #f5f5f5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .emptySpace {
+            height: 5vh;
+        }
         /*TYPOGRAPHY*/
         .title {
             font-family: "Montserrat", serif;
@@ -1023,12 +1031,13 @@
         .header {
             font-family: "Montserrat", serif;
             font-size: x-large;
-            font-weight: 500;
+            font-weight: 700;
             font-style: normal;
             color: black;
-            margin:5px;
-            
+            width: 100%;
+            padding: 10px;
         }
+
 
         .body {
             font-family: "Open Sans", serif;
@@ -1041,7 +1050,8 @@
             background-color: #f5f5f5;
         }
 
- 
+    
+
 
         /*BUTTONS AND RADIO BUTTONS*/
         .button {
@@ -1051,26 +1061,31 @@
             font-style: normal;
             color: var(--background-color);
             background-color: black;
-            min-width: 150px;
+            width: 200px;
+            height: 80px;
             border-radius: var(--border-radius);
             padding: 10px;
             cursor: pointer;
             transition: background var(--transition-speed);
-            margin:5px;
+            margin: 6px;
         }
 
-         .button:hover {
-            background-color: darkgray;
+            .button:hover {
+                background-color: darkgray;
             }
 
         .adminButtons, .navButtons {
             display: flex;
-            gap: 10px; /* Optional: space between buttons */
+            gap: 12px; /* space between buttons */
+        }
+
+        .radio{
+            width:20px;
         }
 
 
 
-       /*FORMS & INPUTS*/
+        /*FORMS & INPUTS*/
         #logonId, #logonPassword {
             margin-top: 15px;
             width: 100%;
@@ -1087,27 +1102,34 @@
         }
 
         input, select, textarea {
-            width:30%;
+            width: 30%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: var(--border-radius);
             font-size: 16px;
         }
 
-        input:focus, select:focus, textarea:focus {
+            input:focus, select:focus, textarea:focus {
                 border-color: var(--primary-color);
                 outline: none;
                 box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
             }
 
         /*PANELS AND VISIBILITY*/
+
+      
+
         .menu, .contentPanel {
             visibility: hidden;
             width: 100%;
         }
+
         .menu {
+            width: 100vw;
             display: flex;
-            justify-content: space-between; /* Distributes space between the two groups */
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
             align-items: center;
             font-family: "Open Sans", serif;
             font-optical-sizing: auto;
@@ -1122,11 +1144,15 @@
             margin-top: 10vh;
         }
 
+        .blueBackground {
+            background-color: #3ab0ff;
+        }
+
         .contentPanel {
             position: absolute;
             background: linear-gradient(to right, #00c49a, #3ab0ff);
             height: 100%;
-
+            width: 100%;
         }
 
 
@@ -1138,21 +1164,21 @@
             display: flex;
             justify-content: center; /* Centers horizontally */
             width: 50vw;
-            height: 60vh;
+            height: 40vh;
             color: black;
             background-color: #f5f5f5;
+            box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
+            border-radius: var(--border-radius);
         }
 
         #logonForm {
             width: 100%;
             height: 100%;
-           
         }
 
         #logonPanel {
             display: flex;
             justify-content: center; /* Centers horizontally */
-         
         }
 
 
@@ -1168,15 +1194,22 @@
 
 
         #randomCommentDisplay {
-            background-color: #3ab0ff;
+            background-color: black;
+            color: #f5f5f5;
             font-family: "Open Sans", serif;
-            font-size: large;
-            font-weight: 600;
+            font-size: xx-large;
+            font-weight: 800;
             font-style: normal;
+            width: 80vw;
+            height: 8vh;
+            margin-top: 10px;
+            text-align: center;
         }
-        
+
         #suggestionText {
-            width:100%;
+            width: 90%;
+            height: 20vh;
+            background-color: #f5f5f5;
         }
 
         #improvementBanner {
@@ -1194,7 +1227,7 @@
             width: 100vw;
         }
 
-        
+
 
         .adminBanner {
             margin-top: 20px;
@@ -1206,16 +1239,38 @@
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
+            width:90vw;
         }
 
-        .mainPanel {
+        .mainPanel, #responsePanel {
             display: flex;
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top:5px;
-            height:30vh;
+            margin-top: 5px;
+            height: 30vh;
         }
+
+        #replyText {
+            width: 100vw;
+        }
+
+        #rateComment {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 5px;
+            width: 50%;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+            }
 
         /* ALIGNMENT & SPACING */
         .centered {
@@ -1229,25 +1284,36 @@
         }
 
         /* MOBILE RESPONSIVENESS */
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
+        @media (max-width: 800px) {
+            #menu {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .navButtons {
+                order: -1; /* Moves navButtons to the top */
+            }
+
+            .adminButtons {
+                order: 1; /* Keeps adminButtons below */
             }
         }
     </style>
+
     <!--END OF YOUR OWN CSS-->
 </head>
 <body>
 
     <div class="titleContainer">
-        <span class="title">Logo/Company Name Here</span>
+        <img src="images/Logo-Text.jpg" alt="Logo Text">
 
     </div>
 
     <div id="menu" class="menu">
         <div class="adminButtons">
-            <button class="button adminOnly" onclick=showActiveComments()>Show Active Comments</button>
-            <button class="button adminOnly" onclick=showArchivedComments()>Show Archived Comments</button>
+            <button class="button adminOnly" onclick=showActiveComments()>Active Comments</button>
+            <button class="button adminOnly" onclick=showArchivedComments()>Archived Comments</button>
             <button class="button adminOnly" onclick=showUsers()>User List</button>
         </div>
 
@@ -1273,7 +1339,7 @@
             <div id="logonPanel" class="contentPanel logonPanel">
                 <div class="logonBox body">
                     <form id="logonForm" onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
-                        <div class="left header">Sign In.</div>
+                        <div class="left header blueBackground">Sign In.</div>
                         <div>
                             <input type="text" id="logonId" class="body textarea" placeholder="Username" />
                         </div>
@@ -1290,7 +1356,7 @@
 
 
             <div id="mainPanel" class="contentPanel mainPanel">
-                <div class="left header">What would you like to see improved?</div>
+                <div id="improvedTitle" class="header">What would you like to see improved?</div>
                 <!-- Suggestion Input Box -->
                 <textarea id="suggestionText" class="body textarea" placeholder="Enter your suggestion here..."></textarea>
 
@@ -1315,34 +1381,36 @@
             </div>
 
 
-            <div id="responsePanel" class="responsePanel contentPanel body">
-                <!-- The div where the random comment will be displayed -->
-                <div id="randomCommentDisplay" class="left header"></div>
+        <div id="responsePanel" class="responsePanel contentPanel body">
+            <!-- The div where the random comment will be displayed -->
+            <div id="randomCommentDisplay"></div>
 
-                <hr />
+            
 
-                <div id="rateComment" class="body">
-                    <!-- The div where the user selects if a comment is important or not-->
-                    <label>Do you think this topic is important?</label>
+            <div id="rateComment">
+                <!-- The div where the user selects if a comment is important or not-->
+                <label>Do you think this topic is important?</label>
+                <div class="radio-group">
                     <input type="radio" id="yes" name="important" value="1">
-                    <label for="yes">Yes</label>
+                    <label for="yes">Yes, it is something that needs to be addressed.</label>
                     <input type="radio" id="no" name="important" value="0">
-                    <label for="no">No</label>
+                    <label for="no">No, I don't believe this issue needs to be addressed.</label>
                 </div>
-
-                <hr />
+            </div>
 
            
-                <!-- Reply Input Box -->
-                <textarea id="replyText" placeholder="Enter your anonymous reply here..." class="body textarea"></textarea>
 
-                <!-- Submit Button -->
-                <button id="submitReplyButton" class="button">Submit Reply</button>
+           
+            <!-- Reply Input Box -->
+            <textarea id="replyText" placeholder="Enter your reasoning here." class="body textarea"></textarea>
 
-                <!-- Skip Button -->
+            <!-- Submit Button -->
+            <button id="submitReplyButton" class="button">Submit Reply</button>
+
+            <!-- Skip Button -->
             <button id="skipButton" class="button">Skip Comment</button>
 
-            </div>
+        </div>
 
             <!-- Panel to display active comments and replies -->
             <div id="commentPanel" class="contentPanel commentPanel body"></div>
