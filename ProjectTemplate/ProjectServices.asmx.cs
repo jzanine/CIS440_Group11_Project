@@ -727,7 +727,6 @@ namespace ProjectTemplate
                         }
                     }
                 }
-
                 return "{ \"success\": true }";
             }
             catch (Exception e)

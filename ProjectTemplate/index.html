@@ -742,7 +742,11 @@
                 dataType: "json",
                 success: function (msg) {
                     alert(display ? "Improvement is now visible to users!" : "Improvement is now hidden from users.");
-                    fetchImprovementBanner(); // Update banner immediately
+                    if (display) {
+                        fetchImprovementBanner(); // Update banner immediately
+                    } else {
+                        $("#improvementBanner").hide(); // Directly hide the banner
+                    }  
                 },
                 error: function () {
                     alert("Error updating display status.");
