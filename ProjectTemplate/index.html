@@ -17,7 +17,7 @@
         //we're using a stacked card approach for our main viewing area
         //this array holds the ids of our cards and
         //the method allows us to easly switch the interface from one to the other
-        var contentPanels = ['logonPanel', 'mainPanel', 'responsePanel', 'commentPanel', 'archivedPanel', 'accountPanel', 'adminPanel'];
+        var contentPanels = ['logonPanel', 'mainPanel', 'responsePanel', 'commentPanel', 'archivedPanel', 'accountPanel'];
 
         //this function toggles which panel is showing
         function showPanel(panelId) {
@@ -1269,7 +1269,7 @@
             justify-content: center;
             flex-wrap: wrap;
             margin-top: 5px;
-            height: 30vh;
+            height: 100vh;
             width:100%;
         }
 
@@ -1408,9 +1408,9 @@
                         <button class="button" onclick="submitImprovement()">Submit Improvement</button>
                         <button class="button" onclick="toggleImprovement(true)">Display Improvement</button>
                         <button class="button" onclick="toggleImprovement(false)">Hide Improvement</button>
-                    </div>
                 </div>
             </div>
+        </div>
 
 
         <div id="responsePanel" class="responsePanel contentPanel body">
@@ -1443,14 +1443,14 @@
 
         </div>
 
-            <!-- Panel to display active comments and replies -->
-            <div id="commentPanel" class="contentPanel commentPanel body"></div>
+        <!-- Panel to display active comments and replies -->
+        <div id="commentPanel" class="contentPanel commentPanel body"></div>
 
-            <!-- Panel to display archived comments and replies -->
-            <div id="archivedPanel" class="contentPanel archivedPanel body"></div>
+        <!-- Panel to display archived comments and replies -->
+        <div id="archivedPanel" class="contentPanel archivedPanel body"></div>
 
-            <!-- Panel to display user account info -->
-            <div id="accountPanel" class="contentPanel accountPanel body"></div>
+        <!-- Panel to display user account info -->
+        <div id="accountPanel" class="contentPanel accountPanel body"></div>
 
         
 
