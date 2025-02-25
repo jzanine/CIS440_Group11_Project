@@ -14,6 +14,11 @@
     <!--YOUR OWN JAVASCRIPT CAN GO RIGHT HERE-->
     <script type="text/javascript">
 
+        window.onload = function () {
+            // Scroll to top when the page is loaded
+            window.scrollTo(0, 0);
+        };
+
         //we're using a stacked card approach for our main viewing area
         //this array holds the ids of our cards and
         //the method allows us to easly switch the interface from one to the other
@@ -999,13 +1004,12 @@
 
         html {
             background: linear-gradient(to right, #00c49a, #3ab0ff);
-        }
-
-        html, body {
             height: 100%;
             width: 100%;
             overflow-x: hidden;
         }
+
+       
 
         * {
             margin: 0;
@@ -1025,23 +1029,13 @@
         .emptySpace {
             height: 5vh;
         }
-        /*TYPOGRAPHY*/
+        /*TEXT*/
         .title {
             font-family: "Montserrat", serif;
             font-size: xx-large;
             font-weight: 700;
             font-style: normal;
             color: #f5f5f5;
-        }
-
-        .header {
-            font-family: "Montserrat", serif;
-            font-size: x-large;
-            font-weight: 700;
-            font-style: normal;
-            color: black;
-            width: 100%;
-            padding: 10px;
         }
 
         .bold {
@@ -1063,8 +1057,29 @@
             width: 90%;
         }
 
+        .header  {
+            font-family: "Montserrat", serif;
+            font-size: xx-large;
+            font-weight: 700;
+            font-style: normal;
+            color: black;
+            width: 100%;
+            padding: 10px;
+            margin-top:20px;
+        }
 
 
+        .signInText {
+            background-color: #3ab0ff;
+            font-family: "Montserrat", serif;
+            font-size: x-large;
+            font-weight: 700;
+            font-style: normal;
+            color: black;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+        }
 
         /*BUTTONS AND RADIO BUTTONS*/
         .button {
@@ -1106,7 +1121,9 @@
         label {
             display: block;
             margin-bottom: 5px;
+            font-size:large;
             font-weight: bold;
+            margin-right:20px;
         }
 
         input, select, textarea {
@@ -1126,14 +1143,12 @@
         /*PANELS AND VISIBILITY*/
 
 
-
         .menu, .contentPanel {
             visibility: hidden;
             width: 100%;
         }
 
-        .menu {
-            width: 100vw;
+        .menu {  
             display: flex;
             justify-content: center;
             gap: 10px;
@@ -1144,7 +1159,7 @@
             font-weight: 100;
             font-style: normal;
             margin-top: 8vh;
-            width: 100vw;
+            
             background-color: #3ab0ff;
         }
 
@@ -1152,21 +1167,16 @@
             margin-top: 10vh;
         }
 
-        .blueBackground {
-            background-color: #3ab0ff;
-        }
 
         .contentPanel {
             position: absolute;
+           /* display: flex;*/
             background: linear-gradient(to right, #00c49a, #3ab0ff);
             height: 100%;
-            width: 100%;
+            width:100%;
         }
 
 
-        .commentPanel, .archivedPanel {
-            height: 100%;
-        }
 
         .logonBox {
             display: flex;
@@ -1174,6 +1184,7 @@
             width: 50vw;
             min-width:520px;
             height: 40vh;
+            min-height: 350px;
             color: black;
             background-color: #f5f5f5;
             box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
@@ -1216,11 +1227,12 @@
             font-weight: 800;
             font-style: italic;
             width: 80vw;
-            height: 8vh;
+            height: 20vh;
             margin-top: 10px;
             text-align: center;
             box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
             border-radius: var(--border-radius);
+            padding:50px;
         }
 
         #suggestionText {
@@ -1286,7 +1298,7 @@
             align-items: center; 
         }
 
-            .radio-group input[type="radio"] {
+        .radio-group input[type="radio"] {
                 display: inline-block; 
                 margin-right: 8px; 
             }
@@ -1301,6 +1313,11 @@
             .logo{
              height:60px;
             }
+
+        .commentPanel, .archivedPanel .accountPanel {
+            height: 100%;
+            display: block;
+        }
 
         /* ALIGNMENT & SPACING */
         .centered {
@@ -1321,6 +1338,7 @@
                 align-items: center;
             }
 
+            
             .navButtons {
                 order: -1; /* Moves navButtons to the top */
             }
@@ -1328,16 +1346,30 @@
             .adminButtons {
                 order: 1; /* Keeps adminButtons below */
             }
+
+            @media (max-width: 1200px) {
+                .radio-group {
+                    flex-direction: column; 
+                    align-items: flex-start; 
+                    gap: 10px; 
+                }
+
+                    .radio-group input[type="radio"] {
+                        margin-right: 0; 
+                    }
+            }
+
         }
     </style>
 
     <!--END OF YOUR OWN CSS-->
 </head>
 <body>
+  
 
     <div class="titleContainer">
         <img class="logo" id="logoText" src="images/Logo-Text.jpg" alt="Logo Text">
-        <img class="logo" id="logoImage"src="images/Logo-Image.jpg" alt="Logo Image">
+        <img class="logo" id="logoImage" src="images/Logo-Image.jpg" alt="Logo Image">
 
 
     </div>
@@ -1355,104 +1387,102 @@
         </div>
     </div>
 
-        <!-- Improvement Banner (Visible to All Users) -->
-        <div id="improvementBanner" class="centered">
-            <p id="improvementMessage"></p>
-        </div>
+    <!-- Improvement Banner (Visible to All Users) -->
+    <div id="improvementBanner" class="centered">
+        <p id="improvementMessage"></p>
+    </div>
 
-        <!--
-        we're using a stacked card approach for our main viewing area
-        add cards within contentContainer array (above in JavaScript section) as individual divs
-        !! DON'T FORGET TO ADD DIV ID TO JAVASCRIPT ARRAY: contentPanels !!
-        that method allows us to easly switch the interface from one to the other
-        -->
-        <div class="contentContainer">
+    <!--
+    we're using a stacked card approach for our main viewing area
+    add cards within contentContainer array (above in JavaScript section) as individual divs
+    !! DON'T FORGET TO ADD DIV ID TO JAVASCRIPT ARRAY: contentPanels !!
+    that method allows us to easly switch the interface from one to the other
+    -->
+    <div class="contentContainer">
 
-            <div id="logonPanel" class="contentPanel logonPanel">
-                <div class="logonBox body">
-                    <form id="logonForm" onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
-                        <div class="left header blueBackground">Sign In.</div>
-                        <div>
-                            <input type="text" id="logonId" class="body textarea" placeholder="Username" />
-                        </div>
-                        <div>
-                            <input type="password" id="logonPassword" class="body textarea" placeholder="Password" />
-                        </div>
+        <div id="logonPanel" class="contentPanel logonPanel">
+            <div class="logonBox body">
+                <form id="logonForm" onsubmit="LogOn($('#logonId').val(), $('#logonPassword').val()); return false;">
+                    <div class="signInText">Sign In.</div>
+                    <div>
+                        <input type="text" id="logonId" class="body textarea" placeholder="Username" />
+                    </div>
+                    <div>
+                        <input type="password" id="logonPassword" class="body textarea" placeholder="Password" />
+                    </div>
 
-                        <div>
-                            <button class="button" type="submit">Go!</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-
-            <div id="mainPanel" class="contentPanel mainPanel">
-                <div id="improvedTitle" class="header">What would you like to see improved?</div>
-                <!-- Suggestion Input Box -->
-                <textarea id="suggestionText" class="body textarea" placeholder="Enter your suggestion here..."></textarea>
-
-                <!-- Submit Button -->
-                <button class="button" onclick="submitSuggestion()">Submit Suggestion</button>
-
-                <!-- Button that the user clicks to load a random comment -->
-                <button class="randomCommentButton button">Load Random Comment</button>
-                <!--</div>-->
-
-              
-
-                <!-- Admin Improvement Panel (Visible to Admins Only) -->
-                <div id="adminPanel" class="adminOnly adminBanner">
-                    <div class="left header">What improvements have already been made?</div>
-                    <textarea id="improvementText" class="body" placeholder="Enter improvement message..." ></textarea>
-                        <button class="button" onclick="submitImprovement()">Submit Improvement</button>
-                        <button class="button" onclick="toggleImprovement(true)">Display Improvement</button>
-                        <button class="button" onclick="toggleImprovement(false)">Hide Improvement</button>
-                </div>
+                    <div>
+                        <button class="button" type="submit">Go!</button>
+                    </div>
+                </form>
             </div>
         </div>
 
 
-        <div id="responsePanel" class="responsePanel contentPanel body">
-            <!-- The div where the random comment will be displayed -->
-            <div id="randomCommentDisplay"></div>
+        <div id="mainPanel" class="contentPanel mainPanel">
+            <div id="improvedTitle" class="header centered">What would you like to see improved?</div>
+            <!-- Suggestion Input Box -->
+            <textarea id="suggestionText" class="body textarea" placeholder="Enter your suggestion here..."></textarea>
 
-
-
-            <div id="rateComment">
-                <!-- The div where the user selects if a comment is important or not-->
-                <label class="header">Do you think this topic is important?</label>
-                <div class="radio-group">
-                    <input type="radio" id="yes" name="important" value="1">
-                    <label for="yes">Yes, it is something that needs to be addressed.</label>
-                    <input type="radio" id="no" name="important" value="0">
-                    <label for="no">No, I don't believe this issue needs to be addressed.</label>
-                </div>
-                <!-- Reply Input Box -->
-                <textarea id="replyText" placeholder="Enter your reasoning here." class="body textarea"></textarea>
-
-            </div>
             <!-- Submit Button -->
-            <button id="submitReplyButton" class="button">Submit Reply</button>
+            <button class="button" onclick="submitSuggestion()">Submit Suggestion</button>
 
-            <!-- Skip Button -->
-            <button id="skipButton" class="button">Skip Comment</button>
+            <!-- Button that the user clicks to load a random comment -->
+            <button class="randomCommentButton button">Load Random Comment</button>
+            <!--</div>-->
+            <!-- Admin Improvement Panel (Visible to Admins Only) -->
+            <div id="adminPanel" class="adminOnly adminBanner">
+                <div class="header centered">What improvements have already been made?</div>
+                <textarea id="improvementText" class="body" placeholder="Enter improvement message..."></textarea>
+                <button class="button" onclick="submitImprovement()">Submit Improvement</button>
+                <button class="button" onclick="toggleImprovement(true)">Display Improvement</button>
+                <button class="button" onclick="toggleImprovement(false)">Hide Improvement</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="emptySpace"></div>
+
+    <div id="responsePanel" class="responsePanel contentPanel body">
+        <!-- The div where the random comment will be displayed -->
+        <div id="randomCommentDisplay"></div>
 
 
 
+        <div id="rateComment">
+            <!-- The div where the user selects if a comment is important or not-->
+            <label class="header centered">Do you think this topic is important?</label>
+            <div class="radio-group">
+                <input type="radio" id="yes" name="important" value="1">
+                <label for="yes">Yes, it is something that needs to be addressed.</label>
+                <input type="radio" id="no" name="important" value="0">
+                <label for="no">No, I don't believe this issue needs to be addressed.</label>
+            </div>
+            <!-- Reply Input Box -->
+            <textarea id="replyText" placeholder="Enter your reasoning here." class="body textarea"></textarea>
 
         </div>
+        <!-- Submit Button -->
+        <button id="submitReplyButton" class="button">Submit Reply</button>
 
-        <!-- Panel to display active comments and replies -->
-        <div id="commentPanel" class="contentPanel commentPanel body"></div>
+        <!-- Skip Button -->
+        <button id="skipButton" class="button">Skip Comment</button>
 
-        <!-- Panel to display archived comments and replies -->
-        <div id="archivedPanel" class="contentPanel archivedPanel body"></div>
 
-        <!-- Panel to display user account info -->
-        <div id="accountPanel" class="contentPanel accountPanel body"></div>
 
-        
+
+    </div>
+
+    <!-- Panel to display active comments and replies -->
+    <div id="commentPanel" class="contentPanel commentPanel body"></div>
+
+    <!-- Panel to display archived comments and replies -->
+    <div id="archivedPanel" class="contentPanel archivedPanel body"></div>
+
+    <!-- Panel to display user account info -->
+    <div id="accountPanel" class="contentPanel accountPanel body"></div>
+
+
 
 </body>
 </html>
