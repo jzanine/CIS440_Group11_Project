@@ -1,4 +1,4 @@
-﻿﻿
+﻿﻿﻿
 <!DOCTYPE html>
 <html>
 <head>
@@ -749,12 +749,12 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (msg) {
-                    alert(display ? "Improvement is now visible to users!" : "Improvement is now hidden from users.");
+                    // alert(display ? "Improvement is now visible to users!" : "Improvement is now hidden from users.");
                     if (display) {
                         fetchImprovementBanner(); // Update banner immediately
                     } else {
                         $("#improvementBanner").hide(); // Directly hide the banner
-                    }  
+                    }
                 },
                 error: function () {
                     alert("Error updating display status.");
@@ -1009,7 +1009,7 @@
             overflow-x: hidden;
         }
 
-       
+
 
         * {
             margin: 0;
@@ -1057,7 +1057,7 @@
             width: 90%;
         }
 
-        .header  {
+        .header {
             font-family: "Montserrat", serif;
             font-size: xx-large;
             font-weight: 700;
@@ -1065,7 +1065,7 @@
             color: black;
             width: 100%;
             padding: 10px;
-            margin-top:20px;
+            margin-top: 20px;
         }
 
 
@@ -1107,7 +1107,7 @@
             gap: 12px; /* space between buttons */
         }
 
-    
+
         /*FORMS & INPUTS*/
         #logonId, #logonPassword {
             margin-top: 15px;
@@ -1121,9 +1121,9 @@
         label {
             display: block;
             margin-bottom: 5px;
-            font-size:large;
+            font-size: large;
             font-weight: bold;
-            margin-right:20px;
+            margin-right: 20px;
         }
 
         input, select, textarea {
@@ -1148,7 +1148,7 @@
             width: 100%;
         }
 
-        .menu {  
+        .menu {
             display: flex;
             justify-content: center;
             gap: 10px;
@@ -1159,7 +1159,6 @@
             font-weight: 100;
             font-style: normal;
             margin-top: 8vh;
-            
             background-color: #3ab0ff;
         }
 
@@ -1170,10 +1169,10 @@
 
         .contentPanel {
             position: absolute;
-           /* display: flex;*/
+            /* display: flex;*/
             background: linear-gradient(to right, #00c49a, #3ab0ff);
             /*height: 100%;*/
-            width:100%;
+            width: 100%;
         }
 
 
@@ -1182,7 +1181,7 @@
             display: flex;
             justify-content: center; /* Centers horizontally */
             width: 50vw;
-            min-width:520px;
+            min-width: 520px;
             height: 40vh;
             min-height: 350px;
             color: black;
@@ -1232,7 +1231,7 @@
             text-align: center;
             box-shadow: 0 0 5px rgba(58, 176, 255, 0.5);
             border-radius: var(--border-radius);
-            padding:50px;
+            padding: 50px;
         }
 
         #suggestionText {
@@ -1259,7 +1258,7 @@
 
         .adminBanner {
             background-color: #ffb74d;
-            margin-top:20px;
+            margin-top: 20px;
         }
 
 
@@ -1282,7 +1281,7 @@
             flex-wrap: wrap;
             margin-top: 5px;
             /*height: 100vh;*/
-            width:100%;
+            width: 100%;
         }
 
 
@@ -1294,25 +1293,25 @@
         .radio-group {
             margin-top: 5px;
             display: flex;
-            gap: 15px; 
-            align-items: center; 
+            gap: 15px;
+            align-items: center;
         }
 
-        .radio-group input[type="radio"] {
-                display: inline-block; 
-                margin-right: 8px; 
+            .radio-group input[type="radio"] {
+                display: inline-block;
+                margin-right: 8px;
             }
 
             .radio-group label {
-                display: inline-block; 
-                font-weight: normal; 
+                display: inline-block;
+                font-weight: normal;
                 white-space: nowrap;
-                font-size:large;
+                font-size: large;
             }
 
-            .logo{
-             height:60px;
-            }
+        .logo {
+            height: 60px;
+        }
 
         .commentPanel, .archivedPanel .accountPanel {
             /*height: 100%;*/
@@ -1338,7 +1337,7 @@
                 align-items: center;
             }
 
-            
+
             .navButtons {
                 order: -1; /* Moves navButtons to the top */
             }
@@ -1349,23 +1348,22 @@
 
             @media (max-width: 1200px) {
                 .radio-group {
-                    flex-direction: column; 
-                    align-items: flex-start; 
-                    gap: 10px; 
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 10px;
                 }
 
                     .radio-group input[type="radio"] {
-                        margin-right: 0; 
+                        margin-right: 0;
                     }
             }
-
         }
     </style>
 
     <!--END OF YOUR OWN CSS-->
 </head>
 <body>
-  
+
 
     <div class="titleContainer">
         <img class="logo" id="logoText" src="images/Logo-Text.jpg" alt="Logo Text">
