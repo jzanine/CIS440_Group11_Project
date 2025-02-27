@@ -1,4 +1,17 @@
-﻿using System;
+﻿
+/*
+ CIS 440
+    Group 11
+
+    Sophia Snyder
+    Anthony Ta
+    Anthony Tuch
+    Rochelle Valnes
+    Sneha Yadav
+    James Zanine
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
